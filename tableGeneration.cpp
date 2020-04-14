@@ -15,12 +15,13 @@ vector<string> tableGeneration::generateOneLine(string password)
     line.push_back(",");
     string hash = sha256(password);
     line.push_back(hash);
-    line.push_back(",");
+    string hashReduction = reduce(hash);
     for (unsigned i = 0;i < 7; i++)
     {
         hash = sha256(hash);
-        line.push_back(hash);
         line.push_back(",");
+        hashReduction = reduce(hash);
+        line.push_back(hash);
     }
     for (unsigned i = 0;i < sizeof(line); i++)
     {
@@ -32,10 +33,10 @@ vector<string> tableGeneration::generateOneLine(string password)
 void tableGeneration::generateFile()
 {
     FILE* fichier = NULL;
-    char actualpath[PATH_MAX + 1];
+    /*char actualpath[PATH_MAX + 1];
     char *ptr = malloc(256 * sizeof(char));
 
     char *absolute_path = src;
-    ptr = realpath(absolute_path, actualpath);
+    ptr = realpath(absolute_path, actualpath);*/
     fichier = fopen("/mon_chemin_d'acces/test.txt", "w");
 }

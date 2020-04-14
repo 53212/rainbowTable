@@ -15,7 +15,9 @@ int main(int argc, char *argv[])
     cout << "sha256('"<< input << "'):" << output1 << endl;
     for (unsigned i = 0; i < sizeof (line); i++)
     {
-        cout << line.at(i) << endl;
+        cout << line.at(i);
     }
+    string output2 = reduce(output1);
+    cout << endl << output2 << endl;
     return 0;
 }
