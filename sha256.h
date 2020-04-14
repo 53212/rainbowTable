@@ -44,9 +44,9 @@ protected:
     typedef unsigned char uint8;
     typedef unsigned int uint32;
     typedef unsigned long long uint64;
- 
     const static uint32 sha256_k[];
     static const unsigned int SHA224_256_BLOCK_SIZE = (512/8);
+
 public:
     void init();
     void update(const unsigned char *message, unsigned int len);
@@ -63,6 +63,7 @@ protected:
  
 std::string sha256(std::string input);
 std::string reduce(std::string hash);
+std::string reduce2(const std::string &hash/*, int collision*/);
  
 #define SHA2_SHFR(x, n)    (x >> n)
 #define SHA2_ROTR(x, n)   ((x >> n) | (x << ((sizeof(x) << 3) - n)))

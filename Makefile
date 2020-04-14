@@ -223,7 +223,6 @@ DIST          = /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/f
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/qt_config.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/toolchain.prf \
@@ -437,7 +436,6 @@ Makefile: RainbowTable.pro /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_6
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/qt_config.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/toolchain.prf \
@@ -626,7 +624,6 @@ Makefile: RainbowTable.pro /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_6
 /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/qt_config.prf:
 /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/macx-clang/qmake.conf:
 /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/spec_post.prf:
-.qmake.stash:
 /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/exclusive_builds.prf:
 /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/mac/sdk.prf:
 /Users/leopoldmols/Documents/QTCreator/5.12.5/clang_64/mkspecs/features/toolchain.prf:
@@ -672,7 +669,6 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) $(TARGET) 
-	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
@@ -697,13 +693,15 @@ compiler_clean:
 
 ####### Compile
 
-sha256-main.o: sha256-main.cpp sha256.h
+sha256-main.o: sha256-main.cpp sha256.h \
+		tableGeneration.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sha256-main.o sha256-main.cpp
 
 sha256.o: sha256.cpp sha256.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sha256.o sha256.cpp
 
-tableGeneration.o: tableGeneration.cpp 
+tableGeneration.o: tableGeneration.cpp sha256.h \
+		tableGeneration.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o tableGeneration.o tableGeneration.cpp
 
 ####### Install

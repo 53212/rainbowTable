@@ -25,14 +25,14 @@ SOURCES += \
         #gen-passwd.cpp \
         sha256-main.cpp \
         sha256.cpp \
-    tableGeneration.cpp
+        tableGeneration.cpp
 
 
 HEADERS += \
         passwd-utils.hpp \
         random.hpp \
         sha256.h \
-    tableGeneration.h
+        tableGeneration.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

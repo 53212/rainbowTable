@@ -2,6 +2,10 @@
 #include <fstream>
 #include "sha256.h"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 /*
  * Updated to C++, zedwood.com 2012
  * Based on Olivier Gay's version
@@ -180,5 +184,36 @@ std::string reduce(std::string hash)
         password += char_policy.at(pos);
         i--; // à changer en le calcul qui diminue le hash
     }
+    return password;
+}
+
+void convertToHexadecimal(const char *text, unsigned char* bytes)
+{
+    //std::string hexa;
+    int temp;
+    for (unsigned i = 0; i < 16; i++)
+    {
+        sscanf(text + 2 * i, "%2x", &temp);
+        //cout << bytes[i] << " - ";
+        bytes[i] = temp;
+        //cout << bytes[i];
+        //temp = bytes[i];
+    }
+}
+
+std::string reduce2(/*const*/ std::string &hash/*, unsigned int collision*/)
+{
+    static const std::string char_policy = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890";
+    cout << hash << endl;
+    std::string password;
+    unsigned int parse;
+    unsigned char* bytes = new unsigned char[16];
+    convertToHexadecimal(hash.c_str(), bytes);
+    for (unsigned j = 0; j < password.length(); j++)
+    {
+        parse = bytes[(j /*+ collision*/) % 16];
+        password += char_policy[parse % char_policy.size()];
+    }
+    delete[] bytes;
     return password;
 }

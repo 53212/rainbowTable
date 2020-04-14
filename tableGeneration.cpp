@@ -16,16 +16,16 @@ vector<string> tableGeneration::generateOneLine(string password)
     string hash = sha256(password);
     line.push_back(hash);
     string hashReduction = reduce(hash);
-    for (unsigned i = 0;i < 7; i++)
+    line.push_back(",");
+    line.push_back(hashReduction);
+    for (unsigned i = 0;i < 20; i++)
     {
         hash = sha256(hash);
         line.push_back(",");
-        hashReduction = reduce(hash);
+        hashReduction = reduce2(hash/*, 62*/);
         line.push_back(hash);
-    }
-    for (unsigned i = 0;i < sizeof(line); i++)
-    {
-        cout << line.at(i) << endl;
+        line.push_back(",");
+        line.push_back(hashReduction);
     }
     return line;
 }
