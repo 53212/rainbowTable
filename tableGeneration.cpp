@@ -15,17 +15,22 @@ vector<string> tableGeneration::generateOneLine(string password)
     line.push_back(",");
     string hash = sha256(password);
     line.push_back(hash);
-    string hashReduction = reduce(hash);
+    string hashReduction = reduce2(hash, 2, line.at(0).length());
     line.push_back(",");
     line.push_back(hashReduction);
-    for (unsigned i = 0;i < 20; i++)
+    for (int i = 0;i < 20; i++)
     {
-        hash = sha256(hash);
         line.push_back(",");
-        hashReduction = reduce2(hash/*, 62*/);
-        line.push_back(hash);
-        line.push_back(",");
-        line.push_back(hashReduction);
+        if (i % 2 != 0)
+        {
+            hashReduction = reduce2(hash, 2, line.at(0).length());
+            line.push_back(hashReduction);
+        }
+        else
+        {
+            hash = sha256(hash);
+            line.push_back(hash);
+        }
     }
     return line;
 }

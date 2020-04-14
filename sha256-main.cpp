@@ -1,6 +1,7 @@
-#include <iostream>
 #include "sha256.h"
 #include "tableGeneration.h"
+#include <iostream>
+#include <memory>
 
 using std::string;
 using std::cout;
@@ -17,8 +18,11 @@ int main(int argc, char *argv[])
     {
         cout << line.at(i) << endl;
     }
-    string &output1Adress = &output1;
-    string output2 = reduce2(output1Adress/*, argc*/);
-    cout << endl << output2 << endl;
+    //c_str output1Adress = &output1;
+    //string * output1Adress = std::addressof(output1);
+    //cout << &output1 << endl;
+    //cout << output1 << endl;
+    string output2 = reduce2(output1, 1, input.length());
+    //cout << endl << output2 << endl;
     return 0;
 }

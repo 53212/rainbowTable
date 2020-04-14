@@ -187,33 +187,39 @@ std::string reduce(std::string hash)
     return password;
 }
 
-void convertToHexadecimal(const char *text, unsigned char* bytes)
+void convertToHexadecimal(const char *word, unsigned char* bytes)
 {
     //std::string hexa;
     int temp;
     for (unsigned i = 0; i < 16; i++)
     {
-        sscanf(text + 2 * i, "%2x", &temp);
+        sscanf(word + 2 * i, "%2x", &temp);
         //cout << bytes[i] << " - ";
         bytes[i] = temp;
-        //cout << bytes[i];
+        //cout << bytes[i] << endl;
         //temp = bytes[i];
     }
 }
 
-std::string reduce2(/*const*/ std::string &hash/*, unsigned int collision*/)
+//column représente le nombre de fois que la fonction de réduction a été faite sur un même mot de passe
+std::string reduce2(const std::string &hash, unsigned int column, int passwordLength)
 {
     static const std::string char_policy = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890";
-    cout << hash << endl;
+    //cout << hash << endl;
     std::string password;
     unsigned int parse;
+    //cout << parse << endl;
     unsigned char* bytes = new unsigned char[16];
     convertToHexadecimal(hash.c_str(), bytes);
-    for (unsigned j = 0; j < password.length(); j++)
+    //cout << hash << endl;
+    //cout << password.length();
+    for (unsigned j = 0; j < passwordLength; j++)
     {
-        parse = bytes[(j /*+ collision*/) % 16];
+        parse = bytes[(j + column) % 16];
+        //cout << parse << endl;
         password += char_policy[parse % char_policy.size()];
     }
     delete[] bytes;
+    //cout << "AZERTYUIOP" << password << endl;
     return password;
 }
