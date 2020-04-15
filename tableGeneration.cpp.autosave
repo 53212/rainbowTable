@@ -75,7 +75,8 @@ ofstream generateFile()
     rainbowTable.close();
 
     char* path = realpath("RainbowTable", NULL);
-    if(path == NULL){
+    if(path == NULL)
+    {
         printf("cannot find file with name[%s]\n", "RainbowTable");
     }
     else

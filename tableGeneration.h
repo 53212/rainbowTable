@@ -10,8 +10,8 @@
 
 using namespace std;
 
-//namespace rainbow
-//{
+namespace rainbow
+{
     class tableGeneration
     {
 
@@ -31,8 +31,10 @@ using namespace std;
 
     void generateOneLine(string password);
 
+    void generateAllLines();
+
     //ofstream generateFile();
 
     void writeInFile(/*ofstream rainbowTable,*/ vector<string> textToPutIn);
-//}
+}
 #endif // TABLEGENERATION_H
