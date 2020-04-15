@@ -202,6 +202,7 @@ void convertToHexadecimal(const char *word, unsigned char* bytes)
 }
 
 //column représente le nombre de fois que la fonction de réduction a été faite sur un même mot de passe
+//Il faut évidemment que le hash soit calculé sur le mot de passe de la colonne qui précède et non le mot de passe initial
 std::string reduce2(const std::string &hash, unsigned int column, int passwordLength)
 {
     static const std::string char_policy = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890";

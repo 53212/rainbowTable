@@ -10,26 +10,27 @@
 
 using namespace std;
 
-namespace rainbow
-{
+//namespace rainbow
+//{
     class tableGeneration
     {
 
         private :
 
-            string password_;
             vector<string> lines_;
 
         public :
-
-            static vector<string> generateOneLine(string password);
-
-            void generateFile();
 
             inline vector<string> getLine() const
             {
                 return lines_;
             }
     };
-}
+
+    void generateOneLine(string password);
+
+    //ofstream generateFile();
+
+    void writeInFile(/*ofstream rainbowTable,*/ vector<string> textToPutIn);
+//}
 #endif // TABLEGENERATION_H
