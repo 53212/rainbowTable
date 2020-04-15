@@ -27,6 +27,8 @@ using namespace std;
             }
     };
 
+    int randomBetweenMinAndMax(int a, int b);
+
     void generateOneLine(string password);
 
     //ofstream generateFile();

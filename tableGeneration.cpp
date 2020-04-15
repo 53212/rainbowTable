@@ -11,6 +11,12 @@
 using namespace std;
 //using namespace rainbow;
 
+// b is excluded
+int randomBetweenMinAndMax(int a, int b)
+{
+    return rand() % (b - a) + a;
+}
+
 void generateOneLine(string password)
 {
     vector<string> line;

@@ -15,7 +15,8 @@ using namespace rainbow;
 
 int main(int argc, char *argv[])
 {
-    string input = generate_passwd(6);
+    int passwordRandomLength = randomBetweenMinAndMax(6, 9);
+    string input = generate_passwd(passwordRandomLength);
     string output1 = sha256(input);
     generateOneLine(input);
     cout << "sha256('"<< input << "'):" << output1 << endl;
