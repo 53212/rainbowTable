@@ -172,55 +172,30 @@ std::string sha256(std::string input)
     return std::string(buf);
 }
 
-std::string reduce(std::string hash)
-{
-    std::string password;
-    int pos;
-    int i = hash.length();
-    static const std::string char_policy = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890";
-    while (i < 0) // à changer en (hash.length > 0)
-    {
-        pos = hash.length() % char_policy.length();
-        password += char_policy.at(pos);
-        i--; // à changer en le calcul qui diminue le hash
-    }
-    return password;
-}
-
 void convertToHexadecimal(const char *word, unsigned char* bytes)
 {
-    //std::string hexa;
     int temp;
-    for (unsigned i = 0; i < 16; i++)
+    for (unsigned i = 0; i < 32; i++)
     {
         sscanf(word + 2 * i, "%2x", &temp);
-        //cout << bytes[i] << " - ";
         bytes[i] = temp;
-        //cout << bytes[i] << endl;
-        //temp = bytes[i];
     }
 }
 
 //column représente le nombre de fois que la fonction de réduction a été faite sur un même mot de passe
 //Il faut évidemment que le hash soit calculé sur le mot de passe de la colonne qui précède et non le mot de passe initial
-std::string reduce2(const std::string &hash, unsigned int column, int passwordLength)
+std::string reduce(const std::string &hash, unsigned int column, int passwordLength)
 {
     static const std::string char_policy = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890";
-    //cout << hash << endl;
     std::string password;
     unsigned int parse;
-    //cout << parse << endl;
-    unsigned char* bytes = new unsigned char[16];
+    unsigned char* bytes = new unsigned char[32];
     convertToHexadecimal(hash.c_str(), bytes);
-    //cout << hash << endl;
-    //cout << password.length();
     for (unsigned j = 0; j < passwordLength; j++)
     {
-        parse = bytes[(j + column) % 16];
-        //cout << parse << endl;
+        parse = bytes[(j + column) % 32];
         password += char_policy[parse % char_policy.size()];
     }
     delete[] bytes;
-    //cout << "AZERTYUIOP" << password << endl;
     return password;
 }

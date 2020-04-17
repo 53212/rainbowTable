@@ -12,6 +12,10 @@ using namespace std;
 
 namespace rainbow
 {
+
+    inline int minLength;
+    inline int maxLength;
+
     class tableGeneration
     {
 
@@ -29,12 +33,8 @@ namespace rainbow
 
     int randomBetweenMinAndMax(int a, int b);
 
-    void generateOneLine(string password);
+    vector<string> generateOneLine(string password);
 
     void generateAllLines();
-
-    //ofstream generateFile();
-
-    void writeInFile(/*ofstream rainbowTable,*/ vector<string> textToPutIn);
 }
 #endif // TABLEGENERATION_H

@@ -7,19 +7,6 @@
 namespace rainbow
 {
 
-/*std::string generate_passwd(int length)
-{
-	static const std::string char_policy = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890";
-	static const int c_len = char_policy.length();
-
-    char str[length + 1];
-	for(int i = 0; i < length; i++)
-		str[i] = char_policy[rainbow::random(0, c_len - 1)];
-	str[length] = '\0';
-
-	return std::string(str);
-}*/
-
 std::string generate_passwd(int length)
 {
     static const std::string char_policy = "azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN1234567890";
@@ -44,7 +31,7 @@ void mass_generate(int n, int mc, int MC, const std::string& of_pwd, const std::
 	{		
 		for(int i = 0; i < n; i++)
 		{
-            std::string pass = generate_passwd(rainbow::random(mc, MC));
+			std::string pass = generate_passwd(rainbow::random(mc, MC));
 			passwd_file << pass << std::endl;
 
 			std::string hash = sha256(pass);
