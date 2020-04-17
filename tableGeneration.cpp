@@ -36,9 +36,9 @@ vector<string> rainbow::generateOneLine(string password)
     return line;
 }
 
-ofstream generateFile()
+ofstream generateRainbowTableFile()
 {
-    std::ofstream rainbowTable ("RainbowTable.txt");
+    ofstream rainbowTable ("RainbowTable.txt");
     rainbowTable.close();
 
     char* path = realpath("RainbowTable", NULL);
@@ -61,10 +61,9 @@ ifstream::pos_type filesize(const char* filename)
 
 void rainbow::generateAllLines()
 {
-    int i = 0;
     int passwordRandomLength;
-    ofstream rainbowTable = generateFile();
-    rainbowTable.open("RainbowTable.txt", ios_base::app);
+    ofstream stream = generateRainbowTableFile();
+    stream.open("RainbowTable.txt", ios_base::app);
     while (filesize("RainbowTable") < 120)
     {
         passwordRandomLength = randomBetweenMinAndMax(minLength, maxLength);
@@ -73,13 +72,33 @@ void rainbow::generateAllLines()
 
         for (unsigned i = 0; i < textToPutIn.size(); i++)
         {
-            rainbowTable << textToPutIn.at(i);
+            stream << textToPutIn.at(i);
         }
     }
+    stream.close();
+}
+
+ofstream generateResultTableFile()
+{
+    ofstream rainbowTable ("ResultTable.txt");
     rainbowTable.close();
+
+    char* path = realpath("ResultTable", NULL);
+    if(path == NULL)
+    {
+        printf("cannot find file with name[%s]\n", "ResultTable");
+    }
+    else
+    {
+        free(path);
+    }
+    return rainbowTable;
 }
 
 void puttingResultsInFile(string password)
 {
-
+    ofstream stream = generateRainbowTableFile();
+    stream.open("ResultTable.txt", ios_base::app);
+    stream << password << endl;
+    stream.close;
 }
