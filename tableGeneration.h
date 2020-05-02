@@ -17,23 +17,14 @@ using namespace std;
 namespace rainbow
 {
 
+    void generate100Hashes();
+
     /**
      * @brief fileSize
      * the size one of the 3 rainbow table files must not exceed
      */
-    inline long fileSize = 3999995896;
-
-    class tableGeneration
-    {
-
-        private :
-            /**
-             * @brief line_
-             */
-            vector<string> line_;
-    };
-
-    //int randomBetweenMinAndMax(int a, int b);
+    inline long fileSize = 799999;//5896;
+    inline long nbLinesToDelete = 2000000;
 
     /**
      * @brief generateOneLine
@@ -52,48 +43,38 @@ namespace rainbow
     void generate3RainbowTableFiles();
 
     /**
-     * @brief hashesToUncypher
-     * generates 100 hashes to uncypher to test our program
-     */
-    //void hashesToUncypher();
-
-    /**
-     * @brief goToLine
-     * Goes to a specific line belonging a file
-     * @param file
-     * The file in which a line has to be found
-     * @param num
-     * The number of the line to find in the file
-     * @return a vector of 3 strings (the found line) :
-     * the first password, a space and the 35th hash
-     */
-    //vector<string> goToLine(fstream& file, unsigned int num);
-
-    /**
-     * @brief goToLine
-     * Goes to a specific line belonging a file
-     * @param file
-     * The file in which a line has to be found
-     * @param num
-     * The number of the line to find in the file
-     * @return a vector of 3 strings (the found line) :
-     * the first password, a space and the 35th hash
-     */
-    //std::fstream& GotoLine(std::fstream& file, unsigned int num);
-
-    /**
-     * @brief putLineAtRightPlace
-     * Puts a line at the right place in the rainbow table text file
-     * to make the text file ordered alphabetically
-     * @param line the line to insert
-     */
-    //void putLineAtRightPlace(vector<string> line);
-
-    /**
      * @brief generateSortedRainbowTable
      * Generates an alphabetically sorted rainbow table text file
      */
+    // I'll use this when I'll implement a for loop with the differents threads.
     //void generateSortedRainbowTable();
+
+    /**
+     * @brief generateSortedRainbowTableThread6
+     * Generates a new text file that will contain
+     * the 6-lettered password and their hashes
+     * They will be ordered on the password length
+     * then alphabetically on the hash
+     */
+    void generateSortedRainbowTableThread6();
+
+    /**
+     * @brief generateSortedRainbowTableThread6
+     * Generates a new text file that will contain
+     * the 7-lettered password and their hashes
+     * They will be ordered on the password length
+     * then alphabetically on the hash
+     */
+    void generateSortedRainbowTableThread7();
+
+    /**
+     * @brief generateSortedRainbowTableThread6
+     * Generates a new text file that will contain
+     * the 8-lettered password and their hashes
+     * They will be ordered on the password length
+     * then alphabetically on the hash
+     */
+    void generateSortedRainbowTableThread8();
 
     /**
      * @brief generateSortedRainbowTables
@@ -102,6 +83,7 @@ namespace rainbow
      * @param passwordLength
      * The length of the passwords ocntained in the not sorted rainbow table text file
      */
+    // I'll use this when I'll implement a for loop with the differents threads.
     void generateSortedRainbowTables(unsigned int passwordLength);
 
     /**
@@ -109,7 +91,7 @@ namespace rainbow
      * generates a rainbow table text file
      * that the lines are generates with 6 letters passwords
      */
-    void thread6(/*unsigned int passwordLength*/);
+    void thread6();
 
     /**
      * @brief thread7
@@ -126,13 +108,16 @@ namespace rainbow
     void thread8();
 
     /**
-     * @brief lastLineOfFile
-     * Looks for the last line of a rainbow table text file
-     * @return a vector of 3 strings (the last line of the rainbow table text file) :
-     * the first password, a space and the 35th hash
+     * @brief generateFinalRainbowTable
+     * Generates the final rainbow table text file
+     * that will contain every 1st password and every 35th hash.
+     * They will be ordered on the password length
+     * then alphabetically on the hash
      */
-    vector<string> lastLineOfFile();
-
     void generateFinalRainbowTable();
+
+    void reduceTable6(string oldFileName, vector<string> lastSortedLine);
+    void reduceTable7(string oldFileName, vector<string> lastSortedLine);
+    void reduceTable8(string oldFileName, vector<string> lastSortedLine);
 }
 #endif // TABLEGENERATION_H
