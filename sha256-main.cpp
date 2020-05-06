@@ -8,6 +8,8 @@
 #include "thread"
 #include <chrono>
 
+#include <string>
+
 /**
  * This project has been made by Jérôme De Groote (42503) & Léopold Mols (53212)
  */
@@ -31,13 +33,13 @@ int main(int argc, char *argv[])
         thread tName(threadName);
     }*/
 
-    thread t1(rainbow::thread6);
-    thread t2(rainbow::thread7);
-    thread t3(rainbow::thread8);
+    //thread t1(rainbow::thread6);
+    //thread t2(rainbow::thread7);
+    //thread t3(rainbow::thread8);
 
-    t1.join();
-    t2.join();
-    t3.join();
+    //t1.join();
+    //t2.join();
+    //t3.join();
 
     // I'll use this when I'll implement a for loop with the differents threads.
     /*for (unsigned int i = 6; i < 9; i++)
@@ -50,7 +52,7 @@ int main(int argc, char *argv[])
     // do something..
     //int nMilliseconds = myTimer.elapsed();
 
-    auto start = chrono::high_resolution_clock::now();
+    /*auto start = chrono::high_resolution_clock::now();
 
     thread t4(rainbow::generateSortedRainbowTableThread6);
     thread t5(rainbow::generateSortedRainbowTableThread7);
@@ -64,7 +66,7 @@ int main(int argc, char *argv[])
 
     auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
-    cout << "Suppression de " << nbLinesToDelete << " à la fois : " << duration.count() << " microsecondes nécessaires à des RT de " << fileSize << " octets" << endl;
+    cout << "Suppression de " << nbLinesToDelete << " à la fois : " << duration.count() << " microsecondes nécessaires à des RT de " << fileSize << " octets" << endl;*/
 
     //rainbow::generateFinalRainbowTable();
 
@@ -77,6 +79,19 @@ int main(int argc, char *argv[])
     //rename("ResultTable2.txt", "Teeeeest.txt");
 
     //generate100Hashes();
+
+    auto start = chrono::high_resolution_clock::now();
+    sort();
+    //createEachCharHashTextFile();
+    //sortEveryCharUnsortedTextFile();
+    //addSortedFilesToCorrespondingRainbowTable();
+    auto stop = chrono::high_resolution_clock::now();
+
+    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+
+    cout << "Suppression de " << nbLinesToDelete << " à la fois : " << duration.count() << " microsecondes nécessaires à des RT de " << fileSize << " octets" << endl;
+    //generateUnsortedRainbowTablePerFirstChar('0', "RainbowTableTemporaryForRT6UNSORTED0.txt", "RainbowTable6.txt");
+    //deleteReadLinesInFile('b', "RainbowTableBIS6.txt", "RainbowTable6.txt");
 
     return 0;
 }

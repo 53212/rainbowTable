@@ -204,7 +204,6 @@ DIST          = /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/f
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/qt_config.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/toolchain.prf \
@@ -399,7 +398,6 @@ Makefile: RainbowTable.pro /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_6
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/qt_config.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/spec_post.prf \
-		.qmake.stash \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/toolchain.prf \
@@ -567,7 +565,6 @@ Makefile: RainbowTable.pro /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_6
 /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/qt_config.prf:
 /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/macx-clang/qmake.conf:
 /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/spec_post.prf:
-.qmake.stash:
 /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/exclusive_builds.prf:
 /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/mac/sdk.prf:
 /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/toolchain.prf:
@@ -613,7 +610,6 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) $(TARGET) 
-	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 

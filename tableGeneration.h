@@ -24,7 +24,7 @@ namespace rainbow
      * the size one of the 3 rainbow table files must not exceed
      */
     inline long fileSize = 799999;//5896;
-    inline long nbLinesToDelete = 2000000;
+    inline long nbLinesToDelete = 500000;
 
     /**
      * @brief generateOneLine
@@ -119,5 +119,19 @@ namespace rainbow
     void reduceTable6(string oldFileName, vector<string> lastSortedLine);
     void reduceTable7(string oldFileName, vector<string> lastSortedLine);
     void reduceTable8(string oldFileName, vector<string> lastSortedLine);
+
+    void passwords6(char firstCharOfHash);
+
+
+
+
+
+    void generateSortedRainbowTableCharPerChar(string fileToWriteInName, string fileToReadInName);
+    void generateUnsortedRainbowTablePerFirstChar(char firstCharOfHash, string fileToWriteInName, string fileToReadInName);
+    void deleteReadLinesInFile(char firstCharOfHash, string fileToWriteInName, string fileToReadInName);
+    void addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength);
+    void createEachCharHashTextFile(unsigned int passwordLength);
+    void sortEveryCharUnsortedTextFile(unsigned int passwordLength);
+    void sort();
 }
 #endif // TABLEGENERATION_H
