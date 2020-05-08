@@ -128,7 +128,8 @@ namespace rainbow
 
     void generateSortedRainbowTableCharPerChar(string fileToWriteInName, string fileToReadInName);
     void generateUnsortedRainbowTablePerFirstChar(char firstCharOfHash, string fileToWriteInName, string fileToReadInName);
-    void deleteReadLinesInFile(char firstCharOfHash, string fileToWriteInName, string fileToReadInName);
+    void splitEveryCharSortedFilesOnceAgainByChar(char secondCharOfHash, string fileToWriteInName, string fileToReadInName);
+    void deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string fileToWriteInName, string fileToReadInName);
     void addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength);
     void createEachCharHashTextFile(unsigned int passwordLength);
     void sortEveryCharUnsortedTextFile(unsigned int passwordLength);
