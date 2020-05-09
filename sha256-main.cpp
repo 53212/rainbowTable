@@ -53,19 +53,14 @@ int main(int argc, char *argv[])
     //int nMilliseconds = myTimer.elapsed();
 
     /*auto start = chrono::high_resolution_clock::now();
-
     thread t4(rainbow::generateSortedRainbowTableThread6);
     thread t5(rainbow::generateSortedRainbowTableThread7);
     thread t6(rainbow::generateSortedRainbowTableThread8);
-
     t4.join();
     t5.join();
     t6.join();
-
     auto stop = chrono::high_resolution_clock::now();
-
     auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-
     cout << "Suppression de " << nbLinesToDelete << " à la fois : " << duration.count() << " microsecondes nécessaires à des RT de " << fileSize << " octets" << endl;*/
 
     //rainbow::generateFinalRainbowTable();
