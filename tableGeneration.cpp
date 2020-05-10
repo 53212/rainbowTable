@@ -4,7 +4,6 @@
 #include "passwd-utils.hpp"
 #include "tableGeneration.h"
 #include <fstream>
-#include <thread>
 
 using namespace std;
 using namespace rainbow;
@@ -88,7 +87,7 @@ string getLastLineOfFile(string fileName)
     return lastLine;
 }
 
-vector<string> rainbow::generateOneLine(string password)
+vector<string> rainbow::generateOneLine(string& password)
 {
     vector<string> line;
     line.push_back(password);
@@ -246,19 +245,13 @@ void rainbow::generate3RainbowTableFiles()
     rainbowTable.close();*/
 }
 
-void rainbow::passwords6(char firstCharOfHash)
+void rainbow::generateUnsortedRainbowTables(unsigned int passwordLength)
 {
-    static const string char_policy = "0123456789azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN";
-    string unsortedFileName = "RainbowTableTemporaryForRT6UNSORTED";
-    string extension = ".txt";
-}
-
-void rainbow::thread6()
-{
+    //passwordLength += 5;
     ofstream rainbowTable;
     string fileName = "RainbowTable";
     string extension = ".txt";
-    fileName += to_string(6/*passwordLength*/);
+    fileName += to_string(passwordLength);
     for (unsigned int i = 0; i < extension.size(); i++)
     {
         fileName += extension.at(i);
@@ -270,7 +263,7 @@ void rainbow::thread6()
     bool first = true;
     while (filesize(fileName.c_str()) < fileSize)
     {
-        string input = generate_passwd(6);
+        string input = generate_passwd(passwordLength);
         vector<string> textToPutIn = generateOneLine(input);
 
         if (first)
@@ -290,7 +283,7 @@ void rainbow::thread6()
     rainbowTable.close();
 }
 
-void rainbow::thread7()
+/*void rainbow::thread7()
 {
     ofstream rainbowTable;
     string fileName = "RainbowTable";
@@ -362,7 +355,7 @@ void rainbow::thread8()
         }
     }
     rainbowTable.close();
-}
+}*/
 
 /*void rainbow::generateSortedRainbowTables(unsigned int passwordLength)
 {
@@ -454,9 +447,17 @@ void rainbow::thread8()
     }
 }*/
 
-void rainbow::reduceTable6(string oldFileName, vector<string> lastSortedLine)
+void rainbow::reduceTable(string& oldFileName, vector<string> lastSortedLine, unsigned int passwordLength)
 {
-    ofstream bufferRainbowTable("RainbowTableBis6.txt");
+    ofstream rainbowTable;
+    string fileName = "RainbowTableBis";
+    string extension = ".txt";
+    fileName += to_string(passwordLength);
+    for (unsigned int i = 0; i < extension.size(); i++)
+    {
+        fileName += extension.at(i);
+    }
+    ofstream bufferRainbowTable(fileName.c_str());
     ifstream file(oldFileName.c_str());
     vector<string> buffer;
     string password;
@@ -486,18 +487,33 @@ void rainbow::reduceTable6(string oldFileName, vector<string> lastSortedLine)
     file.close();
     bufferRainbowTable.close();
     remove(oldFileName.c_str());
-    rename("RainbowTableBis6.txt", oldFileName.c_str());
+    rename(fileName.c_str(), oldFileName.c_str());
 }
 
-void rainbow::generateSortedRainbowTableThread6()
+void rainbow::generateSortedRainbowTables(unsigned int passwordLength)
 {
     bool keepSorting=true;
     string s;
+    string rainbowTable = "RainbowTable";
+    string sortedFileName = "RainbowTableSorted";
+    string extension = ".txt";
+    rainbowTable += to_string(passwordLength);
+    sortedFileName += to_string(passwordLength);
+    string sorted = "SORTED";
+    for (unsigned int l = 0; l < sorted.size(); l++)
+    {
+        sortedFileName += sorted.at(l);
+    }
+    for (unsigned int i = 0; i < extension.size(); i++)
+    {
+        rainbowTable += extension.at(i);
+        sortedFileName += extension.at(i);
+    }
     vector<string> line;
     vector<string> buffer;
     vector<string> bufferMin;
-    ifstream file("RainbowTable6.txt");
-    ofstream file2("RainbowTableSorted6.txt");
+    ifstream file(rainbowTable.c_str());
+    ofstream file2(sortedFileName.c_str());
     int count = 0;
     if(file)
     {
@@ -580,10 +596,10 @@ void rainbow::generateSortedRainbowTableThread6()
             {
                 file.close();
                 file2.close();
-                reduceTable6("RainbowTable6.txt", buffer);
+                reduceTable(rainbowTable, buffer, passwordLength);
                 count = 0;
-                file.open("RainbowTable6.txt", ios_base::beg);
-                file2.open("RainbowTableSorted6.txt", ios_base::app);
+                file.open(rainbowTable.c_str(), ios_base::beg);
+                file2.open(sortedFileName.c_str(), ios_base::app);
             }
             buffer.pop_back();
             buffer.pop_back();
@@ -594,7 +610,7 @@ void rainbow::generateSortedRainbowTableThread6()
     }
 }
 
-void rainbow::reduceTable7(string oldFileName, vector<string> lastSortedLine)
+/*void rainbow::reduceTable7(string& oldFileName, vector<string> lastSortedLine)
 {
     ofstream bufferRainbowTable("RainbowTableBis7.txt");
     ifstream file(oldFileName.c_str());
@@ -627,12 +643,13 @@ void rainbow::reduceTable7(string oldFileName, vector<string> lastSortedLine)
     bufferRainbowTable.close();
     remove(oldFileName.c_str());
     rename("RainbowTableBis7.txt", oldFileName.c_str());
-}
+}*/
 
-void rainbow::generateSortedRainbowTableThread7()
+/*void rainbow::generateSortedRainbowTableThread7()
 {
     bool keepSorting=true;
     string s;
+    string rainbowTable = "RainbowTable7.txt";
     vector<string> line;
     vector<string> buffer;
     vector<string> bufferMin;
@@ -720,7 +737,7 @@ void rainbow::generateSortedRainbowTableThread7()
             {
                 file.close();
                 file2.close();
-                reduceTable7("RainbowTable7.txt", buffer);
+                reduceTable8(rainbowTable, buffer);
                 count = 0;
                 file.open("RainbowTable7.txt", ios_base::beg);
                 file2.open("RainbowTableSorted7.txt", ios_base::app);
@@ -732,9 +749,9 @@ void rainbow::generateSortedRainbowTableThread7()
         file.close();
         file2.close();
     }
-}
+}*/
 
-void rainbow::reduceTable8(string oldFileName, vector<string> lastSortedLine)
+/*void rainbow::reduceTable8(string& oldFileName, vector<string> lastSortedLine)
 {
     ofstream bufferRainbowTable("RainbowTableBis8.txt");
     ifstream file(oldFileName.c_str());
@@ -767,12 +784,13 @@ void rainbow::reduceTable8(string oldFileName, vector<string> lastSortedLine)
     bufferRainbowTable.close();
     remove(oldFileName.c_str());
     rename("RainbowTableBis8.txt", oldFileName.c_str());
-}
+}*/
 
-void rainbow::generateSortedRainbowTableThread8()
+/*void rainbow::generateSortedRainbowTableThread8()
 {
     bool keepSorting=true;
     string s;
+    string rainbowTable = "RainbowTable8.txt";
     vector<string> line;
     vector<string> buffer;
     vector<string> bufferMin;
@@ -860,7 +878,7 @@ void rainbow::generateSortedRainbowTableThread8()
             {
                 file.close();
                 file2.close();
-                reduceTable8("RainbowTable8.txt", buffer);
+                reduceTable8(rainbowTable, buffer);
                 count = 0;
                 file.open("RainbowTable8.txt", ios_base::beg);
                 file2.open("RainbowTableSorted8.txt", ios_base::app);
@@ -872,7 +890,7 @@ void rainbow::generateSortedRainbowTableThread8()
         file.close();
         file2.close();
     }
-}
+}*/
 
 void rainbow::generateFinalRainbowTable()
 {
@@ -907,7 +925,7 @@ void rainbow::generateFinalRainbowTable()
 
 
 
-void rainbow::generateSortedRainbowTableCharPerChar(string fileToWriteInName, string fileToReadInName)
+void rainbow::generateSortedRainbowTableCharPerChar(string& fileToWriteInName, string& fileToReadInName)
 {
     bool keepSorting=true;
     string s;
@@ -1005,7 +1023,7 @@ void rainbow::generateSortedRainbowTableCharPerChar(string fileToWriteInName, st
     }
 }
 
-void rainbow::generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPosition, char charOfHash, string fileToWriteInName, string fileToReadInName)
+void rainbow::generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName)
 {
     ofstream bufferRainbowTable(fileToWriteInName.c_str());
     ifstream file(fileToReadInName.c_str());
@@ -1042,7 +1060,7 @@ void rainbow::generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPo
     bufferRainbowTable.close();
 }
 
-void rainbow::deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string fileToWriteInName, string fileToReadInName)
+void rainbow::deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName)
 {
     ofstream bufferRainbowTable(fileToWriteInName.c_str()/*, ios_base::app*/);
     ifstream file(fileToReadInName.c_str());
@@ -1081,48 +1099,8 @@ void rainbow::deleteReadLinesInFile(unsigned int charInHashPosition, char charOf
     file.close();
     bufferRainbowTable.close();
     remove(fileToReadInName.c_str());
-    rename(fileToWriteInName.c_str(), fileToReadInName.c_str());
+    rename(fileToReadInName.c_str(), fileToWriteInName.c_str());                    // peut-être faut-il échanger l'ancien et le nouveau fichier
 }
-
-/*void rainbow::splitEveryCharSortedFilesOnceAgainByChar(char firstCharOfChar, char secondCharOfHash, string fileToWriteInName, string fileToReadInName)
-{
-    ofstream bufferRainbowTable(fileToWriteInName.c_str());
-    ifstream file(fileToReadInName.c_str());
-
-    string password;
-    string hash;
-    string line;
-    line += password;
-    line += ' ';
-    line += hash;
-    if(file)
-    {
-        while (!file.eof())
-        {
-            file >> password;
-            file >> hash;
-            if (hash == "")
-            {
-                return;
-            }
-            else if (hash.at(0) == firstCharOfChar && hash.at(1) == secondCharOfHash)
-            {
-                if (bufferRainbowTable.tellp() == 0)
-                {
-                    bufferRainbowTable << password << " ";
-                    bufferRainbowTable << hash;
-                }
-                else
-                {
-                    bufferRainbowTable << endl << password << " ";
-                    bufferRainbowTable << hash;
-                }
-            }
-        }
-    }
-    file.close();
-    bufferRainbowTable.close();
-}*/
 
 void rainbow::createEachCharHashTextFile(unsigned int passwordLength)
 {
@@ -1157,8 +1135,8 @@ void rainbow::createEachCharHashTextFile(unsigned int passwordLength)
         for (unsigned int j = 0; j < char_policy.size(); j++)
         {
             string unsortedSecondFileName = "RainbowTable";
-            string temporaryUnsortedRainbowTableFileName = "RainbowTableTemporarySecondaryForRT";
-            temporaryUnsortedRainbowTableFileName += to_string(passwordLength);
+            string temporarySecondaryUnsortedRainbowTableFileName = "RainbowTableTemporarySecondaryForRT";
+            temporarySecondaryUnsortedRainbowTableFileName += to_string(passwordLength);
             unsortedSecondFileName += to_string(passwordLength);
             for (unsigned int k = 0; k < unsorted.size(); k++)
             {
@@ -1166,17 +1144,41 @@ void rainbow::createEachCharHashTextFile(unsigned int passwordLength)
             }
             unsortedSecondFileName += char_policy.at(i);
             unsortedSecondFileName += char_policy.at(j);
-            temporaryUnsortedRainbowTableFileName += char_policy.at(i);
-            temporaryUnsortedRainbowTableFileName += char_policy.at(j);
+            temporarySecondaryUnsortedRainbowTableFileName += char_policy.at(i);
+            temporarySecondaryUnsortedRainbowTableFileName += char_policy.at(j);
             for (unsigned int k = 0; k < extension.size(); k++)
             {
                 unsortedSecondFileName += extension.at(k);
-                temporaryUnsortedRainbowTableFileName += extension.at(k);
+                temporarySecondaryUnsortedRainbowTableFileName += extension.at(k);
             }
             generateUnsortedRainbowTablePerFirstChar(1, char_policy.at(j), unsortedSecondFileName, unsortedFileName);
-            deleteReadLinesInFile(1, char_policy.at(i), temporaryUnsortedRainbowTableFileName, unsortedFileName);               // Ceci fait perdre du temps. Simplement supprimer le fichier final sera peut-être suffisant
-            remove(temporaryUnsortedRainbowTableFileName.c_str());
-            //splitEveryCharSortedFilesOnceAgainByChar(char_policy.at(i), char_policy.at(j), unsortedSecondFileName, unsortedFileName);
+            //deleteReadLinesInFile(1, char_policy.at(i), temporarySecondaryUnsortedRainbowTableFileName, unsortedFileName);               // Ceci fait perdre du temps. Simplement supprimer le fichier final sera peut-être suffisant
+            remove(temporarySecondaryUnsortedRainbowTableFileName.c_str());
+            for (unsigned int k = 0; k < char_policy.size(); k++)
+            {
+                string unsortedThirdFileName = "RainbowTable";
+                string temporaryTertiaryUnsortedRainbowTableFileName = "RainbowTableTemporaryTertiaryForRT";
+                unsortedThirdFileName += to_string(passwordLength);
+                for (unsigned int l = 0; l < unsorted.size(); l++)
+                {
+                    unsortedThirdFileName += unsorted.at(l);
+                }
+                unsortedThirdFileName += char_policy.at(i);
+                unsortedThirdFileName += char_policy.at(j);
+                unsortedThirdFileName += char_policy.at(k);
+                temporaryTertiaryUnsortedRainbowTableFileName += char_policy.at(i);
+                temporaryTertiaryUnsortedRainbowTableFileName += char_policy.at(j);
+                temporaryTertiaryUnsortedRainbowTableFileName += char_policy.at(k);
+                for (unsigned int l = 0; l < extension.size(); l++)
+                {
+                    unsortedThirdFileName += extension.at(l);
+                    temporaryTertiaryUnsortedRainbowTableFileName += extension.at(l);
+                }
+                generateUnsortedRainbowTablePerFirstChar(2, char_policy.at(k), unsortedThirdFileName, unsortedSecondFileName);
+                //deleteReadLinesInFile(1, char_policy.at(i), temporaryTertiaryUnsortedRainbowTableFileName, unsortedSecondFileName);               // Ceci fait perdre du temps. Simplement supprimer le fichier final sera peut-être suffisant
+                remove(temporaryTertiaryUnsortedRainbowTableFileName.c_str());
+            }
+            remove(unsortedSecondFileName.c_str());
         }
         remove(unsortedFileName.c_str());
     }
@@ -1192,29 +1194,34 @@ void rainbow::sortEveryCharUnsortedTextFile(unsigned int passwordLength)
     {
         for (unsigned int j = 0; j < char_policy.size(); j++)
         {
-            string unsortedFileName = "RainbowTable";
-            unsortedFileName += to_string(passwordLength);
-            for (unsigned int k = 0; k < unsorted.size(); k++)
+            for (unsigned int k = 0; k < char_policy.size(); k++)
             {
-                unsortedFileName += unsorted.at(k);
+                string unsortedFileName = "RainbowTable";
+                unsortedFileName += to_string(passwordLength);
+                for (unsigned int l = 0; l < unsorted.size(); l++)
+                {
+                    unsortedFileName += unsorted.at(l);
+                }
+                string sortedFileName = "RainbowTable";
+                sortedFileName += to_string(passwordLength);
+                for (unsigned int l = 0; l < sorted.size(); l++)
+                {
+                    sortedFileName += sorted.at(l);
+                }
+                unsortedFileName += char_policy.at(i);
+                unsortedFileName += char_policy.at(j);
+                unsortedFileName += char_policy.at(k);
+                sortedFileName += char_policy.at(i);
+                sortedFileName += char_policy.at(j);
+                sortedFileName += char_policy.at(k);
+                for (unsigned int l = 0; l < extension.size(); l++)
+                {
+                    unsortedFileName += extension.at(l);
+                    sortedFileName += extension.at(l);
+                }
+                generateSortedRainbowTableCharPerChar(sortedFileName, unsortedFileName);
+                remove(unsortedFileName.c_str());
             }
-            unsortedFileName += char_policy.at(i);
-            string sortedFileName = "RainbowTable";
-            sortedFileName += to_string(passwordLength);
-            for (unsigned int k = 0; k < sorted.size(); k++)
-            {
-                sortedFileName += sorted.at(k);
-            }
-            sortedFileName += char_policy.at(i);
-            unsortedFileName += char_policy.at(j);
-            sortedFileName += char_policy.at(j);
-            for (unsigned int k = 0; k < extension.size(); k++)
-            {
-                unsortedFileName += extension.at(k);
-                sortedFileName += extension.at(k);
-            }
-            generateSortedRainbowTableCharPerChar(sortedFileName, unsortedFileName);
-            remove(unsortedFileName.c_str());
         }
     }
 }
@@ -1235,26 +1242,30 @@ void rainbow::addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLen
     {
         for (unsigned int j = 0; j < char_policy.size(); j++)
         {
-            ifstream charSortedFile;
-            string sortedFileName = "RainbowTable";
-            sortedFileName += to_string(passwordLength);
-            for (unsigned int j = 0; j < sorted.size(); j++)
+            for (unsigned int k = 0; k < char_policy.size(); k++)
             {
-                sortedFileName += sorted.at(j);
+                ifstream charSortedFile;
+                string sortedFileName = "RainbowTable";
+                sortedFileName += to_string(passwordLength);
+                for (unsigned int l = 0; l < sorted.size(); l++)
+                {
+                    sortedFileName += sorted.at(l);
+                }
+                sortedFileName += char_policy.at(i);
+                sortedFileName += char_policy.at(j);
+                sortedFileName += char_policy.at(k);
+                for (unsigned int l = 0; l < extension.size(); l++)
+                {
+                    sortedFileName += extension.at(l);
+                }
+                charSortedFile.open(sortedFileName.c_str(), ios_base::binary);
+                string s;
+                while(getline(charSortedFile, s))
+                {
+                    finalFile<<s<<endl;
+                }
+                remove(sortedFileName.c_str());
             }
-            sortedFileName += char_policy.at(i);
-            sortedFileName += char_policy.at(j);
-            for (unsigned int j = 0; j < extension.size(); j++)
-            {
-                sortedFileName += extension.at(j);
-            }
-            charSortedFile.open(sortedFileName.c_str(), ios_base::binary);
-            string s;
-            while(getline(charSortedFile, s))
-            {
-                finalFile<<s<<endl;
-            }
-            remove(sortedFileName.c_str());
         }
     }
 }
@@ -1266,5 +1277,28 @@ void rainbow::sort()
         createEachCharHashTextFile(i);
         sortEveryCharUnsortedTextFile(i);
         addSortedFilesToCorrespondingRainbowTable(i);
+    }
+}
+
+void rainbow::putAllInFinalTable()
+{
+    for (unsigned int i = 6; i < 9; i++)
+    {
+        string rainbowTable = "RainbowTable";
+        string rainbowTableName = "RainbowTable";
+        string extension = ".txt";
+        rainbowTableName += to_string(i);
+        for (unsigned int j = 0; j < extension.size(); j++)
+        {
+            rainbowTableName += extension.at(j);
+            rainbowTable += extension.at(j);
+        }
+        cout << rainbowTable << endl;
+        ofstream finalFile(rainbowTable.c_str(), ios_base::app);
+        ifstream tempFile(rainbowTableName.c_str());
+        //while(tempFile.eof())
+        {
+            finalFile << tempFile.rdbuf();
+        }
     }
 }

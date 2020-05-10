@@ -37,7 +37,7 @@ namespace rainbow
      * the password length
      * @return the right rainbow table text file line that should contain the password to find
      */
-    vector<string> findCorrectChain(string hashToCompare, int length);
+    vector<string> findCorrectChain(string& hashToCompare, int length);
 
     /**
      * @brief findPsw
@@ -49,7 +49,7 @@ namespace rainbow
      * @return "not found"
      * if the password hasn't been found in the rainbow table text file
      */
-    string findPsw(string hashToUncypher);
+    string findPsw(string& hashToUncypher);
 
     /**
      * @brief findAllPsw
@@ -68,7 +68,7 @@ namespace rainbow
      * that could contain the hash to uncypher and the password length that is "lenght" (received as parameter)
      * for a single hash to uncypher. This hash should of course be contained in the concerned line
      */
-    vector<string> getHashesChain(string hashToUncypher, int length);
+    vector<string> getHashesChain(string& hashToUncypher, int length);
 
     /**
      * @brief generateResultTableFile
@@ -82,7 +82,7 @@ namespace rainbow
      * Puts the result int the result text file
      * @param password
      */
-    void puttingResultsInFile(string password);
+    void puttingResultsInFile(string& password);
 
     /**
      * @brief getCorrectPswOfChain
@@ -93,6 +93,6 @@ namespace rainbow
      * the number of reductions done
      * @return the corretc password found
      */
-    string getCorrectPswOfChain(string firstPsw, int collumn);
+    string getCorrectPswOfChain(string& firstPsw, int collumn);
 }
 #endif // UNCYPHER_H

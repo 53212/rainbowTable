@@ -22,7 +22,7 @@ vector<string> rainbow::readHashToUncypher()
     return hashes;
 }
 
-vector<string> rainbow::getHashesChain(string hashToUncypher, int length)
+vector<string> rainbow::getHashesChain(string& hashToUncypher, int length)
 {
     {
         vector<string> hashes;
@@ -44,7 +44,7 @@ vector<string> rainbow::getHashesChain(string hashToUncypher, int length)
     }
 }
 
-vector<string> rainbow::findCorrectChain(string hashToCompare,int length)
+vector<string> rainbow::findCorrectChain(string& hashToCompare,int length)
 {
     vector<string> hashes;
     string hash;
@@ -81,7 +81,7 @@ vector<string> rainbow::findCorrectChain(string hashToCompare,int length)
     return hashes;
 }
 
-string rainbow::findPsw(string hashToUncypher)
+string rainbow::findPsw(string& hashToUncypher)
 {
     for(int length = 6; length < 9; length++)
     {
@@ -116,7 +116,7 @@ void rainbow::findAllPsw()
     stream.close();
 }
 
-string rainbow::getCorrectPswOfChain(string firstPsw, int collumn)
+string rainbow::getCorrectPswOfChain(string& firstPsw, int collumn)
 {
     string psw = firstPsw;
     for (int i = 0; i < collumn; i++)

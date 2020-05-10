@@ -5,7 +5,8 @@
 #include "sha256.h"
 #include "tableGeneration.h"
 #include "uncypher.h"
-#include "thread"
+#include <vector>
+#include <thread>
 #include <chrono>
 
 #include <string>
@@ -33,9 +34,41 @@ int main(int argc, char *argv[])
         thread tName(threadName);
     }*/
 
-    //thread t1(rainbow::thread6);
-    //thread t2(rainbow::thread7);
-    //thread t3(rainbow::thread8);
+    auto start = chrono::high_resolution_clock::now();
+
+    vector<thread> threadVector;
+    //unsigned int passwordLength = 6;
+    for(unsigned int i = 6; i < 9; i++)
+    {
+        threadVector.emplace_back([&](){generateUnsortedRainbowTables(i);}); // Pass by reference here, make sure the object lifetime is correct
+        //thread t(rainbow::generatePasswordLengthDifferentRainbowTable, i);
+        //threadVector.push_back(t);
+        //passwordLength++;
+    }
+    for(auto& t: threadVector)
+    {
+        t.join();
+    }
+    int count=3;
+    int CORES = static_cast<int>(thread::hardware_concurrency());
+    cout << (CORES>count?count:CORES) << endl;
+    /*while (count > 0)
+    {
+      vector<thread *> threads(min(CORES, count));
+      for (size_t i = 0; i < threads.size(); ++i)
+      { // Start appropriate number of threads
+        threads[i] = new thread(thread6, i);
+      }
+      for (size_t i = 0; i < threads.size(); ++i)
+      { // Wait for all threads to finish
+        threads[i]->join();
+        delete threads[i];
+        --count;
+      }
+    }*/
+    //thread t1(rainbow::generatePasswordLengthDifferentRainbowTable, 6);
+    //thread t2(rainbow::generatePasswordLengthDifferentRainbowTable, 7);
+    //thread t3(rainbow::generatePasswordLengthDifferentRainbowTable, 8);
 
     //t1.join();
     //t2.join();
@@ -65,7 +98,8 @@ int main(int argc, char *argv[])
 
     //rainbow::generateFinalRainbowTable();
 
-    //rainbow::findAllPsw();
+    //putAllInFinalTable();
+    //findAllPsw();
 
     /*vector<string> test;
     test.push_back("U1fggJ");
@@ -75,8 +109,7 @@ int main(int argc, char *argv[])
 
     //generate100Hashes();
 
-    auto start = chrono::high_resolution_clock::now();
-    sort();
+    //sort();
     //createEachCharHashTextFile();
     //sortEveryCharUnsortedTextFile();
     //addSortedFilesToCorrespondingRainbowTable();

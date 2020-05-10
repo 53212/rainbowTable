@@ -33,7 +33,7 @@ namespace rainbow
      * The password from which the line has to be generated
      * @return a vector of 3 strings : the first password, a space and the 35th hash
      */
-    vector<string> generateOneLine(string password);
+    vector<string> generateOneLine(string& password);
 
     /**
      * @brief generate3RainbowTableFiles
@@ -56,7 +56,7 @@ namespace rainbow
      * They will be ordered on the password length
      * then alphabetically on the hash
      */
-    void generateSortedRainbowTableThread6();
+    void generateSortedRainbowTables(unsigned int passwordLength);
 
     /**
      * @brief generateSortedRainbowTableThread6
@@ -65,7 +65,7 @@ namespace rainbow
      * They will be ordered on the password length
      * then alphabetically on the hash
      */
-    void generateSortedRainbowTableThread7();
+    //void generateSortedRainbowTableThread7();
 
     /**
      * @brief generateSortedRainbowTableThread6
@@ -74,7 +74,7 @@ namespace rainbow
      * They will be ordered on the password length
      * then alphabetically on the hash
      */
-    void generateSortedRainbowTableThread8();
+    //void generateSortedRainbowTableThread8();
 
     /**
      * @brief generateSortedRainbowTables
@@ -84,28 +84,29 @@ namespace rainbow
      * The length of the passwords ocntained in the not sorted rainbow table text file
      */
     // I'll use this when I'll implement a for loop with the differents threads.
-    void generateSortedRainbowTables(unsigned int passwordLength);
+    //void generateSortedRainbowTables(unsigned int passwordLength);
 
     /**
-     * @brief thread6
-     * generates a rainbow table text file
-     * that the lines are generates with 6 letters passwords
+     * @brief generatePasswordLengthDifferentRainbowTable
+     * Generates rainbow tables depending on the password length
+     * @param passwordLength
+     * The length of the passwords the will e in the rainbow table generated
      */
-    void thread6();
+    void generateUnsortedRainbowTables(unsigned int passwordLength);
 
     /**
      * @brief thread7
      * generates a rainbow table text file
      * that the lines are generates with 7 letters passwords
      */
-    void thread7();
+    //void thread7();
 
     /**
      * @brief thread8
      * generates a rainbow table text file
      * that the lines are generates with 8 letters passwords
      */
-    void thread8();
+    //void thread8();
 
     /**
      * @brief generateFinalRainbowTable
@@ -116,23 +117,21 @@ namespace rainbow
      */
     void generateFinalRainbowTable();
 
-    void reduceTable6(string oldFileName, vector<string> lastSortedLine);
-    void reduceTable7(string oldFileName, vector<string> lastSortedLine);
-    void reduceTable8(string oldFileName, vector<string> lastSortedLine);
-
-    void passwords6(char firstCharOfHash);
+    void reduceTable(string& oldFileName, vector<string> lastSortedLine, unsigned int passwordLength);
+    //void reduceTable7(string& oldFileName, vector<string> lastSortedLine);
+    //void reduceTable8(string& oldFileName, vector<string> lastSortedLine);
 
 
 
 
 
-    void generateSortedRainbowTableCharPerChar(string fileToWriteInName, string fileToReadInName);
-    void generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPosition, char charOfHash, string fileToWriteInName, string fileToReadInName);
-    //void splitEveryCharSortedFilesOnceAgainByChar(char firstCharOfChar, char secondCharOfHash, string fileToWriteInName, string fileToReadInName);
-    void deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string fileToWriteInName, string fileToReadInName);
+    void generateSortedRainbowTableCharPerChar(string& fileToWriteInName, string& fileToReadInName);
+    void generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
+    void deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength);
     void createEachCharHashTextFile(unsigned int passwordLength);
     void sortEveryCharUnsortedTextFile(unsigned int passwordLength);
     void sort();
+    void putAllInFinalTable();
 }
 #endif // TABLEGENERATION_H
