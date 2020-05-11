@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <filesystem>
 #include <stdlib.h>
 #include <memory>
@@ -34,24 +34,6 @@ int main(int argc, char *argv[])
         thread tName(threadName);
     }*/
 
-    auto start = chrono::high_resolution_clock::now();
-
-    vector<thread> threadVector;
-    //unsigned int passwordLength = 6;
-    for(unsigned int i = 6; i < 9; i++)
-    {
-        threadVector.emplace_back([&](){generateUnsortedRainbowTables(i);}); // Pass by reference here, make sure the object lifetime is correct
-        //thread t(rainbow::generatePasswordLengthDifferentRainbowTable, i);
-        //threadVector.push_back(t);
-        //passwordLength++;
-    }
-    for(auto& t: threadVector)
-    {
-        t.join();
-    }
-    int count=3;
-    int CORES = static_cast<int>(thread::hardware_concurrency());
-    cout << (CORES>count?count:CORES) << endl;
     /*while (count > 0)
     {
       vector<thread *> threads(min(CORES, count));
@@ -109,7 +91,12 @@ int main(int argc, char *argv[])
 
     //generate100Hashes();
 
-    //sort();
+
+
+    auto start = chrono::high_resolution_clock::now();
+
+    //generate3RainbowTableFiles();
+    sort();
     //createEachCharHashTextFile();
     //sortEveryCharUnsortedTextFile();
     //addSortedFilesToCorrespondingRainbowTable();
