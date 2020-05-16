@@ -6,6 +6,9 @@
 #define UNCYPHER_H
 #include "iostream"
 #include "vector"
+#include <thread>
+#include <mutex>
+#include <future>
 
 using namespace std;
 
@@ -20,6 +23,8 @@ namespace rainbow
      * //va juste recuperer tout les hash a dechiffrer et le mettre en memeoir
      */
     vector<string> readHashToUncypher();
+
+    //std::mutex mutex;
 
     /**
      * @brief findCorrectChain
@@ -49,7 +54,7 @@ namespace rainbow
      * @return "not found"
      * if the password hasn't been found in the rainbow table text file
      */
-    string findPsw(string& hashToUncypher);
+    string findPsw(unsigned int passwordLength, string& hashToUncypher);
 
     /**
      * @brief findAllPsw
@@ -68,14 +73,7 @@ namespace rainbow
      * that could contain the hash to uncypher and the password length that is "lenght" (received as parameter)
      * for a single hash to uncypher. This hash should of course be contained in the concerned line
      */
-    vector<string> getHashesChain(string& hashToUncypher, int length);
-
-    /**
-     * @brief generateResultTableFile
-     * Generates a text file that will contain the passwords found
-     * @return the ofstream text file generated
-     */
-    ofstream generateResultTableFile();
+    string getHashesChain(string& hashToUncypher, int length,int numberOfReduceDone);
 
     /**
      * @brief puttingResultInFile
@@ -94,5 +92,7 @@ namespace rainbow
      * @return the corretc password found
      */
     string getCorrectPswOfChain(string& firstPsw, int collumn);
+
+    string findPswS(string& hashToUncypher);
 }
 #endif // UNCYPHER_H

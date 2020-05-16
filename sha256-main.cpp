@@ -8,8 +8,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
-
-#include <string>
+#include <map>
 
 /**
  * This project has been made by Jérôme De Groote (42503) & Léopold Mols (53212)
@@ -17,22 +16,36 @@
 using namespace std;
 using namespace rainbow;
 
+
+//std::atomic<map<int, bool>> bools;
+void displayThread(int threadId)
+{
+   //bools[threadId] = true;
+}
+
 int main(int argc, char *argv[])
 {
+
+    auto start = chrono::high_resolution_clock::now();
+
+    /*vector<thread> threads;
+    for (unsigned int i = 0; i < 3; i++)
+    {
+        //thread t = thread(displayThread, bools);
+        threads.push_back(thread(displayThread, i));
+    }
+    for_each(threads.begin(), threads.end(), [](thread &t)
+    {
+        t.join();
+    });
+    for (unsigned int i = 0; i < bools.size(); i++)
+    {
+        cout << "bools at i: " << bools.at(i) << endl;
+    }*/
+
     //To detect how much cores the CPU has
     //const auto processor_count = std::thread::hardware_concurrency();
     //cout << processor_count;
-
-
-    // I'll use this when I'll implement a for loop with the differents threads.
-    /*string tName = "t";
-    string threadName = "thread";
-    for (unsigned int i = 6; i < 9; i++)
-    {
-        tName += to_string(i);
-        threadName += to_string(i);
-        thread tName(threadName);
-    }*/
 
     /*while (count > 0)
     {
@@ -81,7 +94,7 @@ int main(int argc, char *argv[])
     //rainbow::generateFinalRainbowTable();
 
     //putAllInFinalTable();
-    //findAllPsw();
+
 
     /*vector<string> test;
     test.push_back("U1fggJ");
@@ -93,10 +106,10 @@ int main(int argc, char *argv[])
 
 
 
-    auto start = chrono::high_resolution_clock::now();
+    findAllPsw();
 
     //generate3RainbowTableFiles();
-    sort();
+    //sort();
     //createEachCharHashTextFile();
     //sortEveryCharUnsortedTextFile();
     //addSortedFilesToCorrespondingRainbowTable();

@@ -8,6 +8,8 @@
 #include "stdio.h"
 #include "vector"
 #include <thread>
+#include <fstream>
+#include <filesystem>
 
 #ifdef _WIN32
 #include <chrono>
@@ -24,7 +26,7 @@ namespace rainbow
      * @brief fileSize
      * the size one of the 3 rainbow table files must not exceed
      */
-    inline long fileSize = 7999999;//5896;
+    inline long fileSize = 7999;//5896;
 
     /**
      * @brief nbLinesToDelete
@@ -97,13 +99,13 @@ namespace rainbow
 
 
 
-
+    void pushInLine(unsigned int passwordLength, vector<vector<string>> linesToAdd);
     void generateSortedRainbowTableCharPerChar(string& fileToWriteInName, string& fileToReadInName);
     void generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength);
     void createEachCharHashTextFile(unsigned int passwordLength);
-    void sortEveryCharUnsortedTextFile(unsigned int passwordLength, char sortFilesThisChar, char sortFilesUntilThisChar);
+    void sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char sortFilesThisChar, char sortFilesUntilThisChar*/);
     void sort();
     void putAllInFinalTable();
 }

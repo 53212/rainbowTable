@@ -1,6 +1,7 @@
 QT -= gui
 
 TEMPLATE = app
+CONFIG += sdk_no_version_check
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
