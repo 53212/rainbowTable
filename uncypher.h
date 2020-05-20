@@ -24,6 +24,8 @@ namespace rainbow
      */
     vector<string> readHashToUncypher();
 
+    const int nbPasswordsPerThread = 10;
+
     //std::mutex mutex;
 
     /**
@@ -55,6 +57,16 @@ namespace rainbow
      * if the password hasn't been found in the rainbow table text file
      */
     string findPsw(unsigned int passwordLength, string& hashToUncypher);
+
+    /**
+     * @brief putHashesInDifferentVectors
+     * This will divide the hashes to uncypher in differents vectors.
+     * Every vector will contain 10 hashes to uncypher
+     * @param HashesToUncypher
+     * All the hashes to uncypher. They are caught in the text file "HashesToUncypher.txt"
+     * @return
+     */
+    vector<vector<string>> putHashesInDifferentVectors(vector<string> &hashesToUncypher);
 
     /**
      * @brief findAllPsw
@@ -91,7 +103,7 @@ namespace rainbow
      * the number of reductions done
      * @return the corretc password found
      */
-    string getCorrectPswOfChain(string& firstPsw, int collumn);
+    string getCorrectPswOfChain(string& firstPsw, unsigned int collumn);
 
     string findPswS(string& hashToUncypher);
 }

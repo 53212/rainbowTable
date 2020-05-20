@@ -29,7 +29,6 @@ string rainbow::getHashesChain(string& hashToUncypher, int length, int numberOfR
         {
             hash = sha256(reduce(hash, j, length));
         }
-    //cout << "size of hashes : "<< hashes.size() << endl;
     return hash;
 }
 
@@ -45,7 +44,6 @@ vector<string> rainbow::findCorrectChain(string& hashToCompare,int length)
         {
             file>> psw;
             file>> hash;
-            //cout << "hashToCompare : " << hashToCompare << " ; hash : " << hash  << " ; hash == hashToCompare : " << (hash == hashToCompare)<< " ; password length : " << length  << endl;
             if(psw.size()==length)
             {
                 if(hash == hashToCompare)
@@ -97,7 +95,6 @@ string rainbow::findPswS(string& hashToUncypher)
 
 string rainbow::findPsw(unsigned int passwordLength, string& hashToUncypher)
 {
-    //cout << "hashToUncypher : " << hashToUncypher << endl;
     // Mettre un thread pour chaque longueur de mot de passe, mais si un thread trouve le mot de passe, il doit break les 2 autres threads
     string possibleHash = hashToUncypher;
     vector<string> pswFound = rainbow::findCorrectChain(possibleHash,passwordLength);
@@ -123,32 +120,22 @@ string rainbow::findPsw(unsigned int passwordLength, string& hashToUncypher)
     return "notFound";
 }
 
-/**
- * @brief putHashesInDifferentVectors
- * This will divide the hashes to uncypher in differents vectors.
- * Every vector will contain 10 hashes to uncypher
- * @param HashesToUncypher
- * All the hashes to uncypher. They are caught in the text file "HashesToUncypher.txt"
- * @return
- */
-vector<vector<string>> putHashesInDifferentVectors(vector<string> &hashesToUncypher)
+vector<vector<string>> rainbow::putHashesInDifferentVectors(vector<string> &hashesToUncypher)
 {
-    int nbThreadsLookingForNbPasswords = 10;
     vector<vector<string>> reducedHashToUncypher;
     unsigned int cpt1 = 0;
     unsigned int cpt2 = 0;
     unsigned int cpt3 = 0;
-    cpt3 = hashesToUncypher.size() % nbThreadsLookingForNbPasswords;
-    //for (string hashToUncypher : hashesToUncypher)
-    cpt1 = hashesToUncypher.size() / nbThreadsLookingForNbPasswords;
+    cpt3 = hashesToUncypher.size() % nbPasswordsPerThread;
+    cpt1 = hashesToUncypher.size() / nbPasswordsPerThread;
     for (unsigned int i = 0; i < cpt1; i++)
     {
         vector<string> tenHashes;
-        for (unsigned int j = 0; j < nbThreadsLookingForNbPasswords; j++)
+        for (unsigned int j = 0; j < nbPasswordsPerThread; j++)
         {
             tenHashes.push_back(hashesToUncypher.at(cpt2 + j));
         }
-        cpt2 += nbThreadsLookingForNbPasswords;
+        cpt2 += nbPasswordsPerThread;
         reducedHashToUncypher.push_back(tenHashes);
     }
     vector<string> hashRest;
@@ -163,79 +150,54 @@ vector<vector<string>> putHashesInDifferentVectors(vector<string> &hashesToUncyp
     return reducedHashToUncypher;
 }
 
-void findAllPasswordsForThreads(vector<string> hashesToUncypher, promise<vector<string>> &&hashesUncyphered)
+vector<string> findAllPasswordsForThreads(vector<string> hashesToUncypher)
 {
-    vector<string> bufferUncyphered;
+    vector<string> uncyphered;
     for(string hashToUncypher : hashesToUncypher)
     {
-        bufferUncyphered.push_back(rainbow::findPswS(hashToUncypher));
+        uncyphered.push_back(rainbow::findPswS(hashToUncypher));
     }
-    hashesUncyphered.set_value(bufferUncyphered);
+    return uncyphered;
 }
 
 void rainbow::findAllPsw()
 {
     vector<string> hashesToUncypher = rainbow::readHashToUncypher();
     ofstream stream("ResultTable.txt", ios_base::beg);
-
-    // 10 threads pour trouver 10 mots de passe à la fois, et dès qu'un threads est libre, il doit prendre le suivant
-    // Dès qu'un thread a fini, il diminue le compteur et
     vector<vector<string>> parsedHashes = putHashesInDifferentVectors(hashesToUncypher);
     vector<vector<string>> uncypheredHashesVector;
     vector<thread> threadsVector;
+    const int allPasswordsSize = parsedHashes.size();
+    future<vector<string>> allPasswords[allPasswordsSize];
+    int threadCount = 0;
     for (vector<string> vectorHash : parsedHashes)
     {
         promise<vector<string>> uncyphered;
-        auto f = uncyphered.get_future();
-        threadsVector.push_back(thread(&findAllPasswordsForThreads, vectorHash, std::move(uncyphered)));
-        //thread t(&findAllPasswordsForThreads, vectorHash, std::move(uncyphered));
-        vector<string> uncypheredHash = f.get();
-        uncypheredHashesVector.push_back(uncypheredHash);
-        //vectors.push_back(t);
-        //vector<string> uncypheredV;
-        /*promise<vector<string>> uncyphered;
-        std::function<void(promise<vector<string>>)> fun = [uncypheredVector, &vectorHash](promise<vector<string>> uncyphered2)
-        {
-            promise<vector<string>> uncyphered;
-            auto f = uncyphered.get_future();
-            //thread t(&findAllPasswordsForThreads, std::ref(vectorHash), &uncyphered2);
-            uncypheredV2 = f.get();
-            uncypheredVector.push_back(uncypheredV);
-            return uncypheredV;
-        };*/
-        //promise<vector<string>> uncyphered;
-        /*auto f = uncyphered.get_future();
-        //vectors.push_back(thread (&fun, std::move(uncyphered)));
-        vector<string> uncypheredV = f.get();
-        uncypheredVector.push_back(uncypheredV);
-        //vectors.push_back(t);
-        //vectors.push_back(thread(fun));*/
+        allPasswords[threadCount] = async(&findAllPasswordsForThreads, vectorHash);
+        threadCount++;
     }
-    /*for (auto && t : vectors)
+    vector<vector<string>> resultPassword;
+    while(threadCount != nbPasswordsPerThread) // = .join(), but .get locks the other possible threads
     {
-        cout << "hhhh" << endl;
-        t.join();
-        cout << "iiii" << endl;
-    }*/
-    for_each(threadsVector.begin(), threadsVector.end(), [](thread &t)
-    {
-        t.join();
-    });
-    for (unsigned int i = 0; i < uncypheredHashesVector.size(); i++)
-    {
-        vector<string> resultsParsed = uncypheredHashesVector.at(i);
-        for (string result : resultsParsed)
+        for (unsigned int i = 0; i < allPasswordsSize; i++)
         {
-            stream << result << endl;
+            resultPassword.push_back(allPasswords[i].get());
+        }
+    }
+    for (vector<string> passwords : resultPassword)
+    {
+        for (string password : passwords)
+        {
+            stream << password << endl;
         }
     }
     stream.close();
 }
 
-string rainbow::getCorrectPswOfChain(string& firstPsw, int collumn)
+string rainbow::getCorrectPswOfChain(string& firstPsw, unsigned int collumn)
 {
     string psw = firstPsw;
-    for (int i = 0; i < collumn; i++)
+    for (unsigned int i = 0; i < collumn; i++)
     {
         string hashReduction = reduce(sha256(psw), i, firstPsw.length());
         psw = hashReduction;
