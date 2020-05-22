@@ -17,3 +17,7 @@ To launch the program, you have to follow these steps one by one :
 9. You should find the results in the text file named "ResultTable.txt"
 
 There you go !
+
+Clarification :
+- The rainbow table is ordered belonging the hashes first on the numbers and secondly on the letters.
+- As threads are used to uncypher several hashes at once, the results will all be written in the file "ResultTable.txt" at once to avoid several threads writing in the file at the same time and Gege 2 different results. So you need to wait the end of the program.

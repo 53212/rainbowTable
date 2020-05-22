@@ -126,37 +126,49 @@ string getLastLineOfFile(string fileName)
  * the file is sorted on the first, second and third char of the hashes that it contains
  * @return
  */
-string createFileName(string baseName, unsigned int passwordLength, bool isSorted, bool isUnsorted, char hashFirstChar, char hashSecondChar, char hashThirdChar)
+string createFileName(string baseName, unsigned int passwordLength, int threadNumber, bool isSorted, bool isUnsorted, char hashFirstChar, char hashSecondChar, char hashThirdChar)
 {
     string sorted = "SORTED";
     string unsorted = "UNSORTED";
+    string forThread = "ForThread";
     string extension = ".txt";
     baseName += to_string(passwordLength);
-    if (isSorted)
+    if (threadNumber != -1)
     {
-        for (unsigned int i = 0; i < sorted.size(); i++)
+        for (unsigned int i = 0; i < forThread.size(); i++)
         {
-            baseName += sorted.at(i);
+            baseName += forThread.at(i);
         }
+        baseName += to_string(threadNumber);
     }
-    else if (isUnsorted)
+    else
     {
-        for (unsigned int i = 0; i < unsorted.size(); i++)
+        if (isSorted)
         {
-            baseName += unsorted.at(i);
+            for (unsigned int i = 0; i < sorted.size(); i++)
+            {
+                baseName += sorted.at(i);
+            }
         }
-    }
-    if (hashFirstChar != noChar)
-    {
-        baseName += hashFirstChar;
-    }
-    if (hashSecondChar != noChar)
-    {
-        baseName += hashSecondChar;
-    }
-    if (hashThirdChar != noChar)
-    {
-        baseName += hashThirdChar;
+        else if (isUnsorted)
+        {
+            for (unsigned int i = 0; i < unsorted.size(); i++)
+            {
+                baseName += unsorted.at(i);
+            }
+        }
+        if (hashFirstChar != noChar)
+        {
+            baseName += hashFirstChar;
+        }
+        if (hashSecondChar != noChar)
+        {
+            baseName += hashSecondChar;
+        }
+        if (hashThirdChar != noChar)
+        {
+            baseName += hashThirdChar;
+        }
     }
     for (unsigned int i = 0; i < extension.size(); i++)
     {
@@ -172,11 +184,11 @@ vector<string> rainbow::generateOneLine(string& password)
     string hash = sha256(password);
     string hashReduction;
     line.push_back(" ");
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < nbPassWordsInEveryLine; i++)
     {
         hashReduction = reduce(hash, i, line.at(0).length());
         hash = sha256(hashReduction);
-        if (i == 34)
+        if (i == nbPassWordsInEveryLine-1)
         {
             line.push_back(hash);
         }
@@ -198,9 +210,9 @@ void rainbow::generate100Hashes()
     hashes.open(fileHashName.c_str(), ios_base::app);
     bool first = true;
     int a = 0;
-    while (a < 10000)
+    while (a < nbPassWordsInEveryLine)
     {
-        for (int i = 0; i < 3333; i++)
+        for (int i = 0; i < nbPassWordsInEveryLine/3; i++)
         {
             string input = generate_passwd(6);
             vector<string> textToPutIn = generateOneLine(input);
@@ -222,7 +234,7 @@ void rainbow::generate100Hashes()
         hashes << endl;
         passwords << endl;
         first = true;
-        for (int i = 0; i < 3333; i++)
+        for (int i = 0; i < nbPassWordsInEveryLine/3; i++)
         {
             string input = generate_passwd(7);
             vector<string> textToPutIn = generateOneLine(input);
@@ -244,7 +256,7 @@ void rainbow::generate100Hashes()
         hashes << endl;
         passwords << endl;
         first = true;
-        for (int i = 0; i < 3334; i++)
+        for (int i = 0; i < (nbPassWordsInEveryLine/3) + 1; i++)
         {
             string input = generate_passwd(8);
             vector<string> textToPutIn = generateOneLine(input);
@@ -291,88 +303,23 @@ void rainbow::generate3RainbowTableFiles()
     generateUnsortedRainbowTables(passwordLength, unsortedFileName);
 }*/
 
-void rainbow::pushInLine(unsigned int passwordLength, vector<vector<string>> linesToAdd)
+long int sizeToGeneratePerThread()
 {
-    string input = generate_passwd(passwordLength);
-    vector<string> textToPutIn = generateOneLine(input);
-    linesToAdd.push_back(textToPutIn);
+    return fileSize / nbThreadsThatGeneratesPasswords;
 }
 
-void rainbow::generateUnsortedRainbowTables(unsigned int passwordLength)
+string workOfOneThread(unsigned int passwordLength, unsigned int threadNumber)
 {
-    // création du nom de fichier
-    string fileName = createFileName("RainbowTable", passwordLength, false, false, noChar, noChar, noChar);
+    string fileName = createFileName("RainbowTable", passwordLength, threadNumber, false, false, noChar, noChar, noChar);
     ofstream rainbowTable(fileName.c_str()/*, ios_base::app*/);
-    //rainbowTable.clear();
-    bool first = true;
-    //ofstream *rt = &rainbowTable;
     vector<vector<string>> linesToAdd;
-    while (sizeOfFile(fileName.c_str()) < fileSize
-           && (sizeOfFile(fileName.c_str()) + (linesToAdd.size()*72)) < fileSize) //taille du fichier + taille du vector<thread> * 72 car chaque ligne (mot de passe + hash) fait 72 octets
+    bool first = true;
+    while (sizeOfFile(fileName.c_str()) < sizeToGeneratePerThread()
+           && (sizeOfFile(fileName.c_str()) + (linesToAdd.size()*72)) < sizeToGeneratePerThread())
     {
-        vector<thread> threadVector;
-        for (unsigned int i = 0; i < 1; i++)
-        {
-            //thread t(&rainbow::pushInLine, std::ref(passwordLength), std::ref(linesToAdd));
-            //threadVector.push_back(t);
-            /*thread t([passwordLength, &linesToAdd]()
-            {
-                    string input = generate_passwd(passwordLength);
-                    vector<string> textToPutIn = generateOneLine(input);
-                    linesToAdd.push_back(textToPutIn);
-
-            });
-            threadVector.push_back(t);*/
-
-            threadVector.push_back(thread([i, passwordLength, &linesToAdd]()
-            {
-                cout << "1111 : " << i << endl;
-                try
-                {
-                    cout << "2222  : " << i << endl;
-                    //pushInLine(passwordLength, linesToAdd);
-                    string input = generate_passwd(passwordLength);
-                    cout << "3333  : " << i << endl;
-                    vector<string> textToPutIn = generateOneLine(input);
-                    cout << "4444  : " << i << endl;
-                    linesToAdd.push_back(textToPutIn);
-                    cout << "5555  : " << i << endl;
-                }
-                catch (exception e)
-                {
-                    cout << "problem" << endl;
-                    // problème du mloc à régler
-                }
-                //string input = generate_passwd(passwordLength);
-                //vector<string> textToPutIn = generateOneLine(input);
-                /*if (first)
-                {
-                    //rainbowTable << textToPutIn.at(0) << textToPutIn.at(1) << textToPutIn.at(2);
-                    linesToAdd.push_back(textToPutIn);
-                    first = false;
-                }
-                else
-                {
-                    //linesToAdd.at(i).push_back("\n");
-                    linesToAdd.push_back(textToPutIn);
-                    //rainbowTable << endl;
-                    //for (unsigned j = 0; j < textToPutIn.size(); j++)
-                    {
-                        //rainbowTable << textToPutIn.at(j);
-                    }
-                }*/
-            }));
-        }
-        for_each(threadVector.begin(), threadVector.end(), [](thread &t)
-        {
-            t.join();
-        });
-        if(!threadVector.empty())
-        {
-            threadVector.erase(threadVector.begin(), threadVector.end());
-        }
-        //cout << linesToAdd.size();
-        if (linesToAdd.size() >= 100)
+        string input = generate_passwd(passwordLength);
+        linesToAdd.push_back(generateOneLine(input));
+        if (linesToAdd.size() >= 1)
         {
             for (unsigned int i = 0; i < linesToAdd.size(); i++)
             {
@@ -380,8 +327,6 @@ void rainbow::generateUnsortedRainbowTables(unsigned int passwordLength)
                 {
                     if (!linesToAdd.at(i).empty())
                     {
-                        cout << "LTA0 : " << linesToAdd.at(i).size() << endl;
-                        cout << linesToAdd.at(i).at(0) << linesToAdd.at(i).at(1) << linesToAdd.at(i).at(2) << endl;
                         if (first)
                         {
                             first = false;
@@ -390,16 +335,11 @@ void rainbow::generateUnsortedRainbowTables(unsigned int passwordLength)
                         else
                         {
                             rainbowTable << endl;
-                            cout << "BBBB" << endl;
                             rainbowTable << linesToAdd.at(i).at(0) << linesToAdd.at(i).at(1) << linesToAdd.at(i).at(2);
-                            cout << "CCCC" << endl;
-                            cout << "LTA1 : " << linesToAdd.size() << endl;
-                            cout << "i : " << i << endl;
                         }
                     }
                     else
                     {
-
                         cout << "Vecteur vide" << endl;
                     }
                     if(!linesToAdd.empty())
@@ -413,44 +353,64 @@ void rainbow::generateUnsortedRainbowTables(unsigned int passwordLength)
                     // problème du mloc à régler
                 }
             }
-            cout << "2 EEEE" << endl;
-            //linesToAdd.erase(linesToAdd.begin(), linesToAdd.end());
-            cout << "2 EEEJ" << endl;
-            cout << "LTA2 : " << linesToAdd.size() << endl;
-            cout << "DDDD" << endl;
-            //linesToAdd.shrink_to_fit();
         }
         else if ((sizeOfFile(fileName.c_str()) + (linesToAdd.size()*72)) >= fileSize)
         {
-            cout << "AAAA" << endl;
-            cout << "size of lines to add : " << linesToAdd.size() << endl;
             for (unsigned int i = 0; i < linesToAdd.size(); i++)
             {
                 rainbowTable << endl;
                 rainbowTable << linesToAdd.at(i).at(0) << linesToAdd.at(i).at(1) << linesToAdd.at(i).at(2);
             }
-
-            //linesToAdd.erase(linesToAdd.begin(), linesToAdd.end());
-            //linesToAdd.shrink_to_fit();
         }
+    }
+    cout << "fileName thread work : " << fileName << endl;
+    return fileName;
+}
 
-        /*string input = generate_passwd(passwordLength);
-        vector<string> textToPutIn = generateOneLine(input);
+/*vector<string> rainbow::pushInLine(unsigned int passwordLength)
+{
+    vector<string> lineToAdd;
+    string input = generate_passwd(passwordLength);
+    vector<string> textToPutIn = generateOneLine(input);
+    lineToAdd.push_back(textToPutIn);
+    return lineToAdd;
+}*/
 
-        if (first)
+void rainbow::generateUnsortedRainbowTables(unsigned int passwordLength)
+{
+    // création du nom de fichier
+    string fileName = "RainbowTable";
+    fileName += passwordLength;
+    fileName = createFileName(fileName, passwordLength, noNumber, false, false, noChar, noChar, noChar);
+    ofstream rainbowTable(fileName.c_str()/*, ios_base::app*/);
+    //rainbowTable.clear();
+    //ofstream *rt = &rainbowTable;
+    vector<vector<string>> linesToAdd;
+    //while (sizeOfFile(fileName.c_str()) < fileSize
+    //     && (sizeOfFile(fileName.c_str()) + (linesToAdd.size()*72)) < fileSize) //taille du fichier + taille du vector<thread> * 72 car chaque ligne (mot de passe + hash) fait 72 octets
+    //{
+    vector<future<string>> threadVector;
+    for (unsigned int i = 0; i < nbThreadsThatGeneratesPasswords; i++) // to generate 15 threads that creates a random password and it chain
+    {
+        threadVector.push_back(async(&workOfOneThread, passwordLength, i));
+    }
+    unsigned int finishedThread = 0;
+    cout << "threadVector.size() : " << threadVector.size() << endl;
+    while(finishedThread < nbThreadsThatGeneratesPasswords) // = .join(), but .get locks the other possible threads
+    {
+        string threadFileName = threadVector.at(finishedThread).get();
+        cout << "threadFileName : " << threadFileName << endl;
+        ifstream threadRainbowTable(threadFileName, ios_base::beg);
+        cout << "fileName generate : " << fileName << endl;
+        rainbowTable << threadRainbowTable.rdbuf();
+        //cout << "threadRainbowTable : " << threadRainbowTable. << endl;
+        //cout << "threadRainbowTable.rdbuf() ................... : " << threadRainbowTable.rdbuf() << endl;
+        finishedThread++;
+        if (finishedThread != nbThreadsThatGeneratesPasswords)
         {
-            rainbowTable << textToPutIn.at(0) << textToPutIn.at(1) << textToPutIn.at(2);
-            first = false;
-        }
-        else
-        {
-            //cout << filesize(fileName.c_str()) << endl;
             rainbowTable << endl;
-            for (unsigned i = 0; i < textToPutIn.size(); i++)
-            {
-                rainbowTable << textToPutIn.at(i);
-            }
-        }*/
+        }
+        remove(threadFileName.c_str());
     }
     rainbowTable.close();
 }
@@ -465,7 +425,7 @@ void rainbow::reduceTable(string& oldFileName, vector<string> lastSortedLine, un
     {
         fileName += extension.at(i);
     }*/
-    string fileName = createFileName("RainbowTableBis", passwordLength, false, false, noChar, noChar, noChar);
+    string fileName = createFileName("RainbowTableBis", passwordLength, noNumber, false, false, noChar, noChar, noChar);
     ofstream bufferRainbowTable(fileName.c_str());
     ifstream file(oldFileName.c_str());
     vector<string> buffer;
@@ -503,23 +463,8 @@ void rainbow::generateSortedRainbowTables(unsigned int passwordLength)
 {
     bool keepSorting=true;
     string s;
-    /*string rainbowTable = "RainbowTable";
-    string sortedFileName = "RainbowTableSorted";
-    string extension = ".txt";
-    rainbowTable += to_string(passwordLength);
-    sortedFileName += to_string(passwordLength);
-    string sorted = "SORTED";
-    for (unsigned int l = 0; l < sorted.size(); l++)
-    {
-        sortedFileName += sorted.at(l);
-    }
-    for (unsigned int i = 0; i < extension.size(); i++)
-    {
-        rainbowTable += extension.at(i);
-        sortedFileName += extension.at(i);
-    }*/
-    string rainbowTable = createFileName("RainbowTable", passwordLength, false, false, noChar, noChar, noChar);
-    string sortedFileName = createFileName("RainbowTable", passwordLength, true, false, noChar, noChar, noChar);
+    string rainbowTable = createFileName("RainbowTable", passwordLength, noNumber, false, false, noChar, noChar, noChar);
+    string sortedFileName = createFileName("RainbowTable", passwordLength, noNumber, true, false, noChar, noChar, noChar);
     vector<string> line;
     vector<string> buffer;
     vector<string> bufferMin;
@@ -623,9 +568,9 @@ void rainbow::generateSortedRainbowTables(unsigned int passwordLength)
 
 void rainbow::generateFinalRainbowTable()
 {
-    ifstream file1(createFileName("RainbowTable", 6, false, false, noChar, noChar, noChar).c_str());
-    ifstream file2(createFileName("RainbowTable", 7, false, false, noChar, noChar, noChar).c_str());
-    ifstream file3(createFileName("RainbowTable", 8, false, false, noChar, noChar, noChar).c_str());
+    ifstream file1(createFileName("RainbowTable", 6, noNumber, false, false, noChar, noChar, noChar).c_str());
+    ifstream file2(createFileName("RainbowTable", 7, noNumber, false, false, noChar, noChar, noChar).c_str());
+    ifstream file3(createFileName("RainbowTable", 8, noNumber, false, false, noChar, noChar, noChar).c_str());
     ofstream fileFinal("RainbowTable.txt");
 
     string s;
@@ -835,17 +780,8 @@ void rainbow::createEachCharHashTextFile(unsigned int passwordLength)
 {
     string unsorted = "UNSORTED";
     string extension = ".txt";
-    /*string rainbowTableFileName = "RainbowTable";
-    string temporaryRainbowTableFileName = "RainbowTableTemporaryForRT";
-    rainbowTableFileName += to_string(passwordLength);
-    temporaryRainbowTableFileName += to_string(passwordLength);
-    for (unsigned int j = 0; j < extension.size(); j++)
-    {
-        rainbowTableFileName += extension.at(j);
-        temporaryRainbowTableFileName += extension.at(j);
-    }*/
-    string rainbowTableFileName = createFileName("RainbowTable", passwordLength, false, false, noChar, noChar, noChar);
-    string temporaryRainbowTableFileName = createFileName("RainbowTableTemporaryForRT", passwordLength, false, false, noChar, noChar, noChar);
+    string rainbowTableFileName = createFileName("RainbowTable", passwordLength, noNumber, false, false, noChar, noChar, noChar);
+    string temporaryRainbowTableFileName = createFileName("RainbowTableTemporaryForRT", passwordLength, noNumber, false, false, noChar, noChar, noChar);
     static const string char_policy = "0123456789abcdefghijklmnopqrstuvwxyz";
     for (unsigned int i = 0; i < char_policy.size(); i++)
     {
@@ -918,9 +854,6 @@ void rainbow::createEachCharHashTextFile(unsigned int passwordLength)
 void rainbow::sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char sortFilesFromThisChar, char sortFilesUntilThisChar*/)
 {
     static const string char_policy = "0123456789abcdefghijklmnopqrstuvwxyz";
-    //string extension = ".txt";
-    //string sorted = "SORTED";
-    //string unsorted = "UNSORTED";
     for (unsigned int i = 0; i < char_policy.size(); i++)
     {
         for (unsigned int j = 0; j < char_policy.size(); j++)
@@ -950,8 +883,8 @@ void rainbow::sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char 
                     unsortedFileName += extension.at(l);
                     sortedFileName += extension.at(l);
                 }*/
-                string unsortedFileName = createFileName("RainbowTable", passwordLength, false, true, char_policy.at(i), char_policy.at(j), char_policy.at(k));
-                string sortedFileName = createFileName("RainbowTable", passwordLength, true, false, char_policy.at(i), char_policy.at(j), char_policy.at(k));
+                string unsortedFileName = createFileName("RainbowTable", passwordLength, noNumber, false, true, char_policy.at(i), char_policy.at(j), char_policy.at(k));
+                string sortedFileName = createFileName("RainbowTable", passwordLength, noNumber, true, false, char_policy.at(i), char_policy.at(j), char_policy.at(k));
                 generateSortedRainbowTableCharPerChar(sortedFileName, unsortedFileName);
                 remove(unsortedFileName.c_str());
             }
@@ -961,15 +894,7 @@ void rainbow::sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char 
 
 void rainbow::addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength)
 {
-    /*string finalFileName = "RainbowTableSorted";
-    string extension = ".txt";
-    string sorted = "SORTED";
-    finalFileName += to_string(passwordLength);
-    for (unsigned int j = 0; j < extension.size(); j++)
-    {
-        finalFileName += extension.at(j);
-    }*/
-    string finalFileName = createFileName("RainbowTableSorted", passwordLength, false, false, noChar, noChar, noChar);
+    string finalFileName = createFileName("RainbowTableSorted", passwordLength, noNumber, false, false, noChar, noChar, noChar);
     ofstream finalFile(finalFileName.c_str());
     static const string char_policy = "0123456789abcdefghijklmnopqrstuvwxyz";
     for (unsigned int i = 0; i < char_policy.size(); i++)
@@ -978,20 +903,7 @@ void rainbow::addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLen
         {
             for (unsigned int k = 0; k < char_policy.size(); k++)
             {
-                /*string sortedFileName = "RainbowTable";
-                sortedFileName += to_string(passwordLength);
-                for (unsigned int l = 0; l < sorted.size(); l++)
-                {
-                    sortedFileName += sorted.at(l);
-                }
-                sortedFileName += char_policy.at(i);
-                sortedFileName += char_policy.at(j);
-                sortedFileName += char_policy.at(k);
-                for (unsigned int l = 0; l < extension.size(); l++)
-                {
-                    sortedFileName += extension.at(l);
-                }*/
-                string sortedFileName = createFileName("RainbowTable", passwordLength, true, false, char_policy.at(i), char_policy.at(j), char_policy.at(k));
+                string sortedFileName = createFileName("RainbowTable", passwordLength, noNumber, true, false, char_policy.at(i), char_policy.at(j), char_policy.at(k));
                 ifstream charSortedFile;
                 charSortedFile.open(sortedFileName.c_str(), ios_base::binary);
                 string s;
@@ -1010,9 +922,9 @@ void rainbow::sort()
     generate3RainbowTableFiles();
     for (unsigned int i = 6; i < 7; i++)
     {
-        //createEachCharHashTextFile(i);
-        //sortEveryCharUnsortedTextFile(i);
-        //addSortedFilesToCorrespondingRainbowTable(i);
+        createEachCharHashTextFile(i);
+        sortEveryCharUnsortedTextFile(i);
+        addSortedFilesToCorrespondingRainbowTable(i);
     }
 }
 
@@ -1029,8 +941,8 @@ void rainbow::putAllInFinalTable()
             rainbowTableName += extension.at(j);
             rainbowTable += extension.at(j);
         }*/
-        string rainbowTable = createFileName("RainbowTable", i, false, false, noChar, noChar, noChar);
-        string rainbowTableName = createFileName("RainbowTable", i, false, false, noChar, noChar, noChar);
+        string rainbowTable = createFileName("RainbowTable", i, noNumber, false, false, noChar, noChar, noChar);
+        string rainbowTableName = createFileName("RainbowTable", i, noNumber, false, false, noChar, noChar, noChar);
         //cout << rainbowTable << endl;
         ofstream finalFile(rainbowTable.c_str(), ios_base::app);
         ifstream tempFile(rainbowTableName.c_str());

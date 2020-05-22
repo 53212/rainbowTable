@@ -10,6 +10,7 @@
 #include <thread>
 #include <fstream>
 #include <filesystem>
+#include <future>
 
 #ifdef _WIN32
 #include <chrono>
@@ -26,7 +27,9 @@ namespace rainbow
      * @brief fileSize
      * the size one of the 3 rainbow table files must not exceed
      */
-    inline long fileSize = 7999;//5896;
+    inline long fileSize = 79999;//5896;
+
+    inline unsigned int nbPassWordsInEveryLine = 35;
 
     /**
      * @brief nbLinesToDelete
@@ -36,9 +39,14 @@ namespace rainbow
 
     /**
      * @brief noChar
-     * If a method need to create a text file, but without any hash char in the file name
+     * If a method needs to create a text file, but without any hash char in the file name,
+     * the method that calls it will give it this char
      */
     inline char noChar = '!';
+
+    inline int noNumber = -1;
+
+    inline unsigned int nbThreadsThatGeneratesPasswords = 15;
 
     /**
      * @brief generateOneLine
@@ -98,8 +106,7 @@ namespace rainbow
 
 
 
-
-    void pushInLine(unsigned int passwordLength, vector<vector<string>> linesToAdd);
+    //vector<string> pushInLine(unsigned int passwordLength);
     void generateSortedRainbowTableCharPerChar(string& fileToWriteInName, string& fileToReadInName);
     void generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);

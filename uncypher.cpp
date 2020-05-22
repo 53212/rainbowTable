@@ -172,16 +172,17 @@ void rainbow::findAllPsw()
     int threadCount = 0;
     for (vector<string> vectorHash : parsedHashes)
     {
-        promise<vector<string>> uncyphered;
         allPasswords[threadCount] = async(&findAllPasswordsForThreads, vectorHash);
         threadCount++;
     }
     vector<vector<string>> resultPassword;
-    while(threadCount != nbPasswordsPerThread) // = .join(), but .get locks the other possible threads
+    int finishedThread = 0;
+    while(finishedThread < allPasswordsSize) // = .join(), but .get locks the other possible threads
     {
         for (unsigned int i = 0; i < allPasswordsSize; i++)
         {
             resultPassword.push_back(allPasswords[i].get());
+            finishedThread++;
         }
     }
     for (vector<string> passwords : resultPassword)
