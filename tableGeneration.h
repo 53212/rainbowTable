@@ -25,11 +25,16 @@ namespace rainbow
 
     /**
      * @brief fileSize
-     * the size one of the 3 rainbow table files must not exceed
+     * The size one of the 3 rainbow table files must not exceed
      */
-    inline long fileSize = 79999;//5896;
+    inline long fileSize = 799999;//5896;
 
-    inline unsigned int nbPassWordsInEveryLine = 35;
+    /**
+     * @brief nbPassWordsInEveryLine
+     * The number of cypherization and reduction contained
+     * in a single line of the rainbow table
+     */
+    inline unsigned int nbPassWordsInEveryLine = 10000;
 
     /**
      * @brief nbLinesToDelete
@@ -44,8 +49,18 @@ namespace rainbow
      */
     inline char noChar = '!';
 
+    /**
+     * @brief noNumber
+     * If a method needs to create a text file, but without the number of the thread in the file name,
+     * the method that calls it will give it this char
+     */
     inline int noNumber = -1;
 
+    /**
+     * @brief nbThreadsThatGeneratesPasswords
+     * This is the number of thread that will each generate a line
+     * that contains a randow password and its (nbPassWordsInEveryLine)^th hash
+     */
     inline unsigned int nbThreadsThatGeneratesPasswords = 15;
 
     /**
@@ -108,12 +123,12 @@ namespace rainbow
 
     //vector<string> pushInLine(unsigned int passwordLength);
     void generateSortedRainbowTableCharPerChar(string& fileToWriteInName, string& fileToReadInName);
-    void generateUnsortedRainbowTablePerFirstChar(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
+    void generateUnsortedRainbowTablePerCharAt(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength);
     void createEachCharHashTextFile(unsigned int passwordLength);
     void sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char sortFilesThisChar, char sortFilesUntilThisChar*/);
     void sort();
-    void putAllInFinalTable();
+    void putAllInFinalTable(unsigned int passwordLength);
 }
 #endif // TABLEGENERATION_H

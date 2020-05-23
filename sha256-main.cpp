@@ -1,4 +1,4 @@
- #include <iostream>
+#include <iostream>
 #include <filesystem>
 #include <stdlib.h>
 #include <memory>
@@ -20,7 +20,7 @@ using namespace rainbow;
 //std::atomic<map<int, bool>> bools;
 void displayThread(int threadId)
 {
-   //bools[threadId] = true;
+    //bools[threadId] = true;
 }
 
 int main(int argc, char *argv[])
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
     //rainbow::generateFinalRainbowTable();
 
-    //putAllInFinalTable();
+
 
 
     /*vector<string> test;
@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
 
     //generate3RainbowTableFiles();
     sort();
+    //putAllInFinalTable();
     //createEachCharHashTextFile();
     //sortEveryCharUnsortedTextFile();
     //addSortedFilesToCorrespondingRainbowTable();
