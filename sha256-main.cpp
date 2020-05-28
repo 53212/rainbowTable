@@ -106,11 +106,10 @@ int main(int argc, char *argv[])
 
 
 
-    //findAllPsw();
+    findAllPsw();
 
     //generate3RainbowTableFiles();
-    sort();
-    //putAllInFinalTable();
+    //threadSorting();
     //createEachCharHashTextFile();
     //sortEveryCharUnsortedTextFile();
     //addSortedFilesToCorrespondingRainbowTable();

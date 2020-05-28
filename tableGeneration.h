@@ -27,14 +27,14 @@ namespace rainbow
      * @brief fileSize
      * The size one of the 3 rainbow table files must not exceed
      */
-    inline long fileSize = 799999;//5896;
+    inline long fileSize = 11999995896;
 
     /**
      * @brief nbPassWordsInEveryLine
      * The number of cypherization and reduction contained
      * in a single line of the rainbow table
      */
-    inline unsigned int nbPassWordsInEveryLine = 10000;
+    inline unsigned int nbPassWordsInEveryLine = 2000;
 
     /**
      * @brief nbLinesToDelete
@@ -128,7 +128,8 @@ namespace rainbow
     void addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength);
     void createEachCharHashTextFile(unsigned int passwordLength);
     void sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char sortFilesThisChar, char sortFilesUntilThisChar*/);
-    void sort();
+    void sort(unsigned int passwordLength);
+    void threadSorting();
     void putAllInFinalTable(unsigned int passwordLength);
 }
 #endif // TABLEGENERATION_H

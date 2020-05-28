@@ -152,12 +152,12 @@ vector<vector<string>> rainbow::putHashesInDifferentVectors(vector<string> &hash
 
 vector<string> findAllPasswordsForThreads(vector<string> hashesToUncypher)
 {
-    vector<string> uncyphered;
+    vector<string> uncypheredHashes;
     for(string hashToUncypher : hashesToUncypher)
     {
-        uncyphered.push_back(rainbow::findPswS(hashToUncypher));
+        uncypheredHashes.push_back(rainbow::findPswS(hashToUncypher));
     }
-    return uncyphered;
+    return uncypheredHashes;
 }
 
 void rainbow::findAllPsw()
