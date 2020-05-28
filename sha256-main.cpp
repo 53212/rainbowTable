@@ -8,7 +8,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
-#include <map>
+#include <math.h>
 
 /**
  * This project has been made by Jérôme De Groote (42503) & Léopold Mols (53212)
@@ -16,17 +16,12 @@
 using namespace std;
 using namespace rainbow;
 
-
-//std::atomic<map<int, bool>> bools;
-void displayThread(int threadId)
-{
-    //bools[threadId] = true;
-}
-
 int main(int argc, char *argv[])
 {
+    time_t start, end;
+    time(&start);
 
-    auto start = chrono::high_resolution_clock::now();
+    //auto startProgram = chrono::high_resolution_clock::now();
 
     /*vector<thread> threads;
     for (unsigned int i = 0; i < 3; i++)
@@ -106,18 +101,23 @@ int main(int argc, char *argv[])
 
 
 
-    findAllPsw();
 
-    //generate3RainbowTableFiles();
-    //threadSorting();
+    //findAllPsw();
+
+    generateRainbowTable();
     //createEachCharHashTextFile();
     //sortEveryCharUnsortedTextFile();
     //addSortedFilesToCorrespondingRainbowTable();
-    auto stop = chrono::high_resolution_clock::now();
 
-    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
+    time(&end);
+    double time_taken = double(end - start);
+    cout << "Time taken by program is : " << fixed << time_taken << setprecision(150);
+    cout << " sec " << endl;
+    //auto stopProgram = chrono::high_resolution_clock::now();
 
-    cout << "Suppression de " << nbLinesToDelete << " à la fois : " << duration.count() << " microsecondes nécessaires à des RT de " << fileSize << " octets" << endl;
+    //auto durationProgram = chrono::duration_cast<chrono::microseconds>(stopProgram - startProgram);
+
+    //cout << "Suppression de " << nbLinesToDelete << " à la fois : " << durationProgram.count() << " microsecondes nécessaires à des RT de " << fileSize << " octets" << endl;
     //generateUnsortedRainbowTablePerFirstChar('0', "RainbowTableTemporaryForRT6UNSORTED0.txt", "RainbowTable6.txt");
     //deleteReadLinesInFile('b', "RainbowTableBIS6.txt", "RainbowTable6.txt");
 

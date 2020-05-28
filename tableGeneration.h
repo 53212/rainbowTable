@@ -12,6 +12,8 @@
 #include <filesystem>
 #include <future>
 
+#include <sys/time.h>
+
 #ifdef _WIN32
 #include <chrono>
 #endif
@@ -20,8 +22,11 @@ using namespace std;
 
 namespace rainbow
 {
+    //chrono::seconds duration;
 
-    void generate100Hashes();
+    //chrono::seconds start;
+    static chrono::milliseconds startGeneration;
+    static time_t startGen;
 
     /**
      * @brief fileSize
@@ -62,6 +67,8 @@ namespace rainbow
      * that contains a randow password and its (nbPassWordsInEveryLine)^th hash
      */
     inline unsigned int nbThreadsThatGeneratesPasswords = 15;
+
+    void generate100Hashes();
 
     /**
      * @brief generateOneLine
@@ -122,14 +129,14 @@ namespace rainbow
 
 
     //vector<string> pushInLine(unsigned int passwordLength);
-    void generateSortedRainbowTableCharPerChar(string& fileToWriteInName, string& fileToReadInName);
+    void sortUnsortedFiles(string& fileToWriteInName, string& fileToReadInName);
     void generateUnsortedRainbowTablePerCharAt(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void deleteReadLinesInFile(unsigned int charInHashPosition, char charOfHash, string& fileToWriteInName, string& fileToReadInName);
     void addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLength);
     void createEachCharHashTextFile(unsigned int passwordLength);
     void sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char sortFilesThisChar, char sortFilesUntilThisChar*/);
     void sort(unsigned int passwordLength);
-    void threadSorting();
+    void generateRainbowTable();
     void putAllInFinalTable(unsigned int passwordLength);
 }
 #endif // TABLEGENERATION_H

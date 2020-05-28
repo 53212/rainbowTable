@@ -24,11 +24,11 @@ vector<string> rainbow::readHashToUncypher()
 
 string rainbow::getHashesChain(string& hashToUncypher, int length, int numberOfReduceDone)
 {
-    string hash;
-        for( int j = numberOfReduceDone; j < 10000; j++)
-        {
-            hash = sha256(reduce(hash, j, length));
-        }
+    string hash = hashToUncypher;
+    for(int j = numberOfReduceDone; j < 2000; j++)
+    {
+        hash = sha256(reduce(hash, j, length));
+    }
     return hash;
 }
 
@@ -98,16 +98,16 @@ string rainbow::findPsw(unsigned int passwordLength, string& hashToUncypher)
     // Mettre un thread pour chaque longueur de mot de passe, mais si un thread trouve le mot de passe, il doit break les 2 autres threads
     string possibleHash = hashToUncypher;
     vector<string> pswFound = rainbow::findCorrectChain(possibleHash,passwordLength);
-    unsigned count = 9999;
+    unsigned count = 2000 - 1;
     if(!pswFound.empty())
     {
         return rainbow::getCorrectPswOfChain(pswFound[0],count);
     }
-    count --;
-    for (int i = 9998; i >= 0; i--)
+    count--;
+    for (int i = 2000 - 2; i >= 0; i--)
     {
-        string possibleHash = rainbow::getHashesChain(hashToUncypher,passwordLength , i);
-        vector<string> pswFound = rainbow::findCorrectChain(possibleHash,passwordLength);
+        string possibleHash = getHashesChain(hashToUncypher,passwordLength , i);
+        vector<string> pswFound = findCorrectChain(possibleHash,passwordLength);
         if(!pswFound.empty())
         {
             return rainbow::getCorrectPswOfChain(pswFound[0],count);
