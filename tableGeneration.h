@@ -24,22 +24,26 @@ namespace rainbow
 {
     //chrono::seconds duration;
 
-    //chrono::seconds start;
-    static chrono::milliseconds startGeneration;
-    static time_t startGen;
+    inline auto startGen = chrono::high_resolution_clock::now();
+
+    inline int timeForGenerationInSeconds = 28800;
+
+    inline double timeSupposedToSortOneLine = 0.001828073659838;
+
+    inline int oneLineSize = 72;
 
     /**
      * @brief fileSize
      * The size one of the 3 rainbow table files must not exceed
      */
-    inline long fileSize = 11999995896;
+    inline long fileSize = 50000000/*11999995896*/;
 
     /**
      * @brief nbPassWordsInEveryLine
      * The number of cypherization and reduction contained
      * in a single line of the rainbow table
      */
-    inline unsigned int nbPassWordsInEveryLine = 2000;
+    inline unsigned int nbPasswordsInEveryLineForGeneration = 300;
 
     /**
      * @brief nbLinesToDelete
@@ -68,6 +72,10 @@ namespace rainbow
      */
     inline unsigned int nbThreadsThatGeneratesPasswords = 15;
 
+    /**
+     * @brief generate100Hashes
+     * Generates a text file that contains only the 2000th hashes
+     */
     void generate100Hashes();
 
     /**

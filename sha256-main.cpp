@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 
 
 
-    //findAllPsw();
+    //findAllPasswords();
 
     generateRainbowTable();
     //createEachCharHashTextFile();
@@ -111,7 +111,11 @@ int main(int argc, char *argv[])
 
     time(&end);
     double time_taken = double(end - start);
-    cout << "Time taken by program is : " << fixed << time_taken << setprecision(150);
+    if ((int)time_taken % 60 == 0)
+    {
+        cout << "Time taken by program is : " << fixed << time_taken << setprecision(150) << " sec " << endl;
+    }
+    cout << "TOTAL Time taken by program is : " << fixed << time_taken << setprecision(150);
     cout << " sec " << endl;
     //auto stopProgram = chrono::high_resolution_clock::now();
 

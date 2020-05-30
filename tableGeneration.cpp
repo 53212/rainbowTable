@@ -133,7 +133,7 @@ string getLastLineOfFile(string fileName)
  * the file is sorted on the first, second and third char of the hashes that it contains
  * @return
  */
-string createFileName(string baseName, unsigned int passwordLength, int threadNumber, bool isSorted, bool isUnsorted, char hashFirstChar, char hashSecondChar, char hashThirdChar, char hashFourthChar)
+string createFileName(string baseName, unsigned int passwordLength, unsigned int threadNumber, bool isSorted, bool isUnsorted, char hashFirstChar, char hashSecondChar, char hashThirdChar, char hashFourthChar)
 {
     string sorted = "SORTED";
     string unsorted = "UNSORTED";
@@ -198,11 +198,11 @@ vector<string> rainbow::generateOneLine(string& password)
     string hash = sha256(password);
     string hashReduction;
     line.push_back(" ");
-    for (unsigned int i = 0; i < nbPassWordsInEveryLine; i++)
+    for (unsigned int i = 0; i < nbPasswordsInEveryLineForGeneration; i++)
     {
         hashReduction = reduce(hash, i, line.at(0).length());
         hash = sha256(hashReduction);
-        if (i == nbPassWordsInEveryLine-1)
+        if (i == nbPasswordsInEveryLineForGeneration-1)
         {
             line.push_back(hash);
         }
@@ -224,9 +224,9 @@ void rainbow::generate100Hashes()
     hashes.open(fileHashName.c_str(), ios_base::app);
     bool first = true;
     int a = 0;
-    while (a < nbPassWordsInEveryLine)
+    while (a < nbPasswordsInEveryLineForGeneration)
     {
-        for (unsigned int i = 0; i < nbPassWordsInEveryLine/3; i++)
+        for (unsigned int i = 0; i < nbPasswordsInEveryLineForGeneration/3; i++)
         {
             string input = generate_passwd(6);
             vector<string> textToPutIn = generateOneLine(input);
@@ -248,7 +248,7 @@ void rainbow::generate100Hashes()
         hashes << endl;
         passwords << endl;
         first = true;
-        for (unsigned int i = 0; i < nbPassWordsInEveryLine/3; i++)
+        for (unsigned int i = 0; i < nbPasswordsInEveryLineForGeneration/3; i++)
         {
             string input = generate_passwd(7);
             vector<string> textToPutIn = generateOneLine(input);
@@ -270,7 +270,7 @@ void rainbow::generate100Hashes()
         hashes << endl;
         passwords << endl;
         first = true;
-        for (unsigned int i = 0; i < (nbPassWordsInEveryLine/3) + 1; i++)
+        for (unsigned int i = 0; i < (nbPasswordsInEveryLineForGeneration/3) + 1; i++)
         {
             string input = generate_passwd(8);
             vector<string> textToPutIn = generateOneLine(input);
@@ -322,14 +322,12 @@ string workOfOneThread(unsigned int passwordLength, unsigned int threadNumber)
     ofstream rainbowTable(fileName.c_str()/*, ios_base::app*/);
     vector<vector<string>> linesToAdd;
     bool first = true;
-    int z = 0;
-    time_t end;
-    time(&end);
-    double time_taken = double(end - startGen);
-    while(z < 2/*(sqrt(time_taken) / (sizeOfFile(fileName.c_str())/72) < 28800)*/) // Divided by 72 because a line is 72 octets
-    //while (sizeOfFile(fileName.c_str()) < sizeToGeneratePerThread()
-      //     && (sizeOfFile(fileName.c_str()) + (linesToAdd.size()*72)) < sizeToGeneratePerThread())
+    auto endGen = chrono::high_resolution_clock::now();
+    auto durationProgram = chrono::duration_cast<chrono::minutes>(endGen - startGen);
+    while((durationProgram.count() + ((sizeOfFile(fileName.c_str()) / oneLineSize) * timeSupposedToSortOneLine)) * (nbThreadsThatGeneratesPasswords*3) < (timeForGenerationInSeconds/1.56666)
+          && sizeOfFile(fileName.c_str()) < (fileSize / (nbThreadsThatGeneratesPasswords * 3)))
     {
+        cout << "fileSize /3/*/ (nbThreadsThatGeneratesPasswords * 3) = " << fileSize / (nbThreadsThatGeneratesPasswords * 3) << endl;
         string input = generate_passwd(passwordLength);
         linesToAdd.push_back(generateOneLine(input));
         if (linesToAdd.size() >= 10)
@@ -368,7 +366,7 @@ string workOfOneThread(unsigned int passwordLength, unsigned int threadNumber)
                 }
             }
         }
-        else if ((sizeOfFile(fileName.c_str()) + (linesToAdd.size()*72)) >= fileSize)
+        else if ((sizeOfFile(fileName.c_str()) + (linesToAdd.size()*oneLineSize)) >= fileSize)
         {
             for (unsigned int i = 0; i < linesToAdd.size(); i++)
             {
@@ -376,6 +374,7 @@ string workOfOneThread(unsigned int passwordLength, unsigned int threadNumber)
                 rainbowTable << linesToAdd.at(i).at(0) << linesToAdd.at(i).at(1) << linesToAdd.at(i).at(2);
             }
         }
+        endGen = chrono::high_resolution_clock::now();
     }
     return fileName;
 }
@@ -599,6 +598,10 @@ void rainbow::generateFinalRainbowTable()
 
 
 
+bool isEmpty(std::ifstream& pFile)
+{
+    return pFile.peek() == std::ifstream::traits_type::eof();
+}
 
 void rainbow::sortUnsortedFiles(string& fileToWriteInName, string& fileToReadInName)
 {
@@ -607,94 +610,97 @@ void rainbow::sortUnsortedFiles(string& fileToWriteInName, string& fileToReadInN
     vector<string> line;
     vector<string> buffer;
     vector<string> bufferMin;
-    ifstream file(fileToReadInName);
-    ofstream file2(fileToWriteInName);
+    ifstream fileToReadIn(fileToReadInName);
+    ofstream fileToWriteIn(fileToWriteInName);
     //int count = 0;
-    if(file)
+    if (!isEmpty(fileToReadIn))
     {
-        while(keepSorting)
+        if(fileToReadIn)
         {
-            if(!line.empty())
+            while(keepSorting)
             {
-                line.pop_back();
-                line.pop_back();
-            }
-            file>>s;
-            line.push_back(s);
-            file>>s;
-            line.push_back(s);
-            if (s == "")
-            {
-                return;
-            }
-            if(!bufferMin.empty())
-            {
-                while(!file.eof() && bufferMin.at(1) >= line.at(1))
+                if(!line.empty())
                 {
                     line.pop_back();
                     line.pop_back();
-                    file>>s;
-                    line.push_back(s);
-                    file>>s;
-                    line.push_back(s);
                 }
-                if(file.eof())
+                fileToReadIn>>s;
+                line.push_back(s);
+                fileToReadIn>>s;
+                line.push_back(s);
+                if (s == "")
                 {
-                    if(bufferMin.at(1) < line.at(1))
+                    return;
+                }
+                if(!bufferMin.empty())
+                {
+                    while(!fileToReadIn.eof() && bufferMin.at(1) >= line.at(1))
                     {
-                        file2<<line.at(0)<<" "<<line.at(1)<<endl;
+                        line.pop_back();
+                        line.pop_back();
+                        fileToReadIn>>s;
+                        line.push_back(s);
+                        fileToReadIn>>s;
+                        line.push_back(s);
                     }
-                    keepSorting=false;
-                }
-            }
-            buffer.push_back(line.at(0));
-            buffer.push_back(line.at(1));
-            while(!file.eof())
-            {
-                line.pop_back();
-                line.pop_back();
-                file>>s;
-                line.push_back(s);
-                file>>s;
-                line.push_back(s);
-                if(bufferMin.empty())
-                {
-                    if(line.at(1) < buffer.at(1))
+                    if(fileToReadIn.eof())
                     {
-                        buffer.pop_back();
-                        buffer.pop_back();
-                        buffer.push_back(line.at(0));
-                        buffer.push_back(line.at(1));
+                        if(bufferMin.at(1) < line.at(1))
+                        {
+                            fileToWriteIn<<line.at(0)<<" "<<line.at(1)<<endl;
+                        }
+                        keepSorting=false;
+                    }
+                }
+                buffer.push_back(line.at(0));
+                buffer.push_back(line.at(1));
+                while(!fileToReadIn.eof())
+                {
+                    line.pop_back();
+                    line.pop_back();
+                    fileToReadIn>>s;
+                    line.push_back(s);
+                    fileToReadIn>>s;
+                    line.push_back(s);
+                    if(bufferMin.empty())
+                    {
+                        if(line.at(1) < buffer.at(1))
+                        {
+                            buffer.pop_back();
+                            buffer.pop_back();
+                            buffer.push_back(line.at(0));
+                            buffer.push_back(line.at(1));
+                        }
+                    }
+                    if(!bufferMin.empty())
+                    {
+                        if(line.at(1) < buffer.at(1) && line.at(1) > bufferMin.at(1))
+                        {
+                            buffer.pop_back();
+                            buffer.pop_back();
+                            buffer.push_back(line.at(0));
+                            buffer.push_back(line.at(1));
+                        }
                     }
                 }
                 if(!bufferMin.empty())
                 {
-                    if(line.at(1) < buffer.at(1) && line.at(1) > bufferMin.at(1))
-                    {
-                        buffer.pop_back();
-                        buffer.pop_back();
-                        buffer.push_back(line.at(0));
-                        buffer.push_back(line.at(1));
-                    }
+                    bufferMin.pop_back();
+                    bufferMin.pop_back();
                 }
+                bufferMin.push_back(buffer.at(0));
+                bufferMin.push_back(buffer.at(1));
+                if(keepSorting)
+                {
+                    fileToWriteIn<<buffer.at(0)<<" "<<buffer.at(1)<<endl;
+                }
+                buffer.pop_back();
+                buffer.pop_back();
+                fileToReadIn.seekg(0,ios_base::beg);
             }
-            if(!bufferMin.empty())
-            {
-                bufferMin.pop_back();
-                bufferMin.pop_back();
-            }
-            bufferMin.push_back(buffer.at(0));
-            bufferMin.push_back(buffer.at(1));
-            if(keepSorting)
-            {
-                file2<<buffer.at(0)<<" "<<buffer.at(1)<<endl;
-            }
-            buffer.pop_back();
-            buffer.pop_back();
-            file.seekg(0,ios_base::beg);
+            fileToReadIn.close();
+            fileToWriteIn.close();
         }
-        file.close();
-        file2.close();
     }
 }
 
@@ -863,13 +869,6 @@ void rainbow::addSortedFilesToCorrespondingRainbowTable(unsigned int passwordLen
                     string sortedFileName = createFileName("RainbowTable", passwordLength, noNumber, true, false, char_policy.at(i), char_policy.at(j), char_policy.at(k), char_policy.at(l));
                     ifstream charSortedFile(sortedFileName.c_str(), ios_base::binary);
                     finalFile << charSortedFile.rdbuf();
-                    //cout << "finalFileName " << nbFilesRead << " : " << finalFileName << endl;
-                    //charSortedFile.open(sortedFileName.c_str(), ios_base::binary);
-                    /*string s;
-                    while(getline(charSortedFile, s))
-                    {
-                        finalFile<<s<<endl;
-                    }*/
                     remove(sortedFileName.c_str());
                     nbFilesRead++;
                 }
@@ -892,16 +891,19 @@ void rainbow::putAllInFinalTable(unsigned int passwordLength)
 void rainbow::sort(unsigned int passwordLength)
 {
     createEachCharHashTextFile(passwordLength);
+    cout << "Finished dividing unsorted rainbow tables" << endl;
     sortEveryCharUnsortedTextFile(passwordLength);
+    cout << "Finished sorting unsorted little files" << endl;
     addSortedFilesToCorrespondingRainbowTable(passwordLength);
+    cout << "Finished merging all little soted files" << endl;
 }
 
 void rainbow::generateRainbowTable()
 {
-    //start = chrono::high_resolution_clock::now();
-    time(&startGen);
-    generate3RainbowTableFiles();
-    /*vector<thread> threadVector;
+    // Generation of unsorted rainbow table
+    //generate3RainbowTableFiles();
+    // Sort of rainbow table
+    vector<thread> threadVector;
     for (unsigned int i = 6; i < 9; i++)
     {
         threadVector.push_back(thread([i]()
@@ -912,9 +914,10 @@ void rainbow::generateRainbowTable()
     for_each(threadVector.begin(), threadVector.end(), [](thread &t)
     {
         t.join();
-    });*/
-    /*for (unsigned int i = 6; i < 9; i++)
+    }); // end of sorting
+    // Merging all sorted rainbow tables
+    for (unsigned int i = 6; i < 9; i++)
     {
-        putAllInFinalTable(i);
-    }*/
+        //putAllInFinalTable(i);
+    }
 }

@@ -6,9 +6,10 @@
 vector<string> rainbow::readHashToUncypher()
 {
     vector<string> hashes;
-    ifstream file("HashToUncypher.txt");
+    ifstream file("HashesToUncypher.txt");
     if(file)
     {
+        //cout << "file.is_open() : " << file.is_open() << endl;
         string line;
         while(getline(file, line))
         {
@@ -17,7 +18,7 @@ vector<string> rainbow::readHashToUncypher()
     }
     else
     {
-        cout << "ERREUR: Impossible d'ouvrir HashToUncypher.txt" << endl;
+        cout << "ERREUR: Impossible d'ouvrir HashesToUncypher.txt" << endl;
     }
     return hashes;
 }
@@ -25,7 +26,7 @@ vector<string> rainbow::readHashToUncypher()
 string rainbow::getHashesChain(string& hashToUncypher, int length, int numberOfReduceDone)
 {
     string hash = hashToUncypher;
-    for(int j = numberOfReduceDone; j < 2000; j++)
+    for(int j = numberOfReduceDone; j < nbPassWordsInEveryLineForUncyphering; j++)
     {
         hash = sha256(reduce(hash, j, length));
     }
@@ -42,8 +43,8 @@ vector<string> rainbow::findCorrectChain(string& hashToCompare,int length)
     {
         while(!file.eof())
         {
-            file>> psw;
-            file>> hash;
+            file >> psw;
+            file >> hash;
             if(psw.size()==length)
             {
                 if(hash == hashToCompare)
@@ -57,8 +58,10 @@ vector<string> rainbow::findCorrectChain(string& hashToCompare,int length)
                     break;
                 }
             }
-            if(psw.size()>length)
+            if(psw.size() > length)
+            {
                 break;
+            }
         }
     }
     else
@@ -98,13 +101,13 @@ string rainbow::findPsw(unsigned int passwordLength, string& hashToUncypher)
     // Mettre un thread pour chaque longueur de mot de passe, mais si un thread trouve le mot de passe, il doit break les 2 autres threads
     string possibleHash = hashToUncypher;
     vector<string> pswFound = rainbow::findCorrectChain(possibleHash,passwordLength);
-    unsigned count = 2000 - 1;
+    unsigned count = nbPassWordsInEveryLineForUncyphering - 1;
     if(!pswFound.empty())
     {
         return rainbow::getCorrectPswOfChain(pswFound[0],count);
     }
     count--;
-    for (int i = 2000 - 2; i >= 0; i--)
+    for (int i = nbPassWordsInEveryLineForUncyphering - 2; i >= 0; i--)
     {
         string possibleHash = getHashesChain(hashToUncypher,passwordLength , i);
         vector<string> pswFound = findCorrectChain(possibleHash,passwordLength);
@@ -155,12 +158,13 @@ vector<string> findAllPasswordsForThreads(vector<string> hashesToUncypher)
     vector<string> uncypheredHashes;
     for(string hashToUncypher : hashesToUncypher)
     {
+        cout << endl << "hashToUncypher : " << hashToUncypher << endl;
         uncypheredHashes.push_back(rainbow::findPswS(hashToUncypher));
     }
     return uncypheredHashes;
 }
 
-void rainbow::findAllPsw()
+void rainbow::findAllPasswords()
 {
     vector<string> hashesToUncypher = rainbow::readHashToUncypher();
     ofstream stream("ResultTable.txt", ios_base::beg);

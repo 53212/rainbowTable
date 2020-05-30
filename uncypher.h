@@ -26,6 +26,8 @@ namespace rainbow
 
     const int nbPasswordsPerThread = 10;
 
+    inline int nbPassWordsInEveryLineForUncyphering = 300;
+
     //std::mutex mutex;
 
     /**
@@ -69,10 +71,10 @@ namespace rainbow
     vector<vector<string>> putHashesInDifferentVectors(vector<string> &hashesToUncypher);
 
     /**
-     * @brief findAllPsw
+     * @brief findAllPasswords
      * This will look for the password from every hash to uncypher
      */
-    void findAllPsw();
+    void findAllPasswords();
 
     /**
      * @brief getHashesChain
