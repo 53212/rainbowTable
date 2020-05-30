@@ -12,8 +12,6 @@
 #include <filesystem>
 #include <future>
 
-#include <sys/time.h>
-
 #ifdef _WIN32
 #include <chrono>
 #endif
@@ -23,6 +21,9 @@ using namespace std;
 namespace rainbow
 {
     //chrono::seconds duration;
+
+    // I stop it at 'g' because no hash seems to contain a letter which position in the alphabet is 'g' or later
+    inline const string char_policy = "0123456789abcdef";//ghijklmnopqrstuvwxyz";
 
     inline auto startGen = chrono::high_resolution_clock::now();
 
@@ -120,7 +121,7 @@ namespace rainbow
      * They will be ordered on the password length
      * then alphabetically on the hash
      */
-    void generateFinalRainbowTable();
+    //void generateFinalRainbowTable();
 
     /**
      * @brief reduceTable
