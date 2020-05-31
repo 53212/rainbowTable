@@ -37,7 +37,7 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = RainbowTable1.0.0
-DISTDIR = /Users/leopoldmols/Documents/QTCreator/ESI/2eme/SECL/RainbowTable/RainbowTable/.tmp/RainbowTable1.0.0
+DISTDIR = /Users/leopoldmols/Documents/QTCreator/ESI/2eme/SECL/RainbowTable/temp/rainbowTable/.tmp/RainbowTable1.0.0
 LINK          = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
 LFLAGS        = -stdlib=libc++ -headerpad_max_install_names $(EXPORT_ARCH_ARGS) -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -mmacosx-version-min=10.12 -Wl,-rpath,@executable_path/../Frameworks
 LIBS          = $(SUBLIBS)    
@@ -245,7 +245,7 @@ EXPORT_QMAKE_XCODE_DEVELOPER_PATH = /Applications/Xcode.app/Contents/Developer
 EXPORT_VALID_ARCHS = x86_64
 EXPORT_ACTIVE_ARCHS = $(filter $(EXPORT_VALID_ARCHS), $(ARCHS))
 EXPORT_ARCH_ARGS = $(foreach arch, $(if $(EXPORT_ACTIVE_ARCHS), $(EXPORT_ACTIVE_ARCHS), $(EXPORT_VALID_ARCHS)), -arch $(arch))
-EXPORT__PRO_FILE_ = /Users/leopoldmols/Documents/QTCreator/ESI/2eme/SECL/RainbowTable/RainbowTable/RainbowTable.pro
+EXPORT__PRO_FILE_ = /Users/leopoldmols/Documents/QTCreator/ESI/2eme/SECL/RainbowTable/temp/rainbowTable/RainbowTable.pro
 
 
 include /Users/leopoldmols/Documents/QTCreator/5.12.8/clang_64/mkspecs/features/mac/sdk.mk
