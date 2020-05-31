@@ -37,14 +37,14 @@ namespace rainbow
      * @brief fileSize
      * The size one of the 3 rainbow table files must not exceed
      */
-    inline long fileSize = 50000000/*11999995896*/;
+    inline long fileSize = 10000000/*11999995896*/;
 
     /**
      * @brief nbPassWordsInEveryLine
      * The number of cypherization and reduction contained
      * in a single line of the rainbow table
      */
-    inline unsigned int nbPasswordsInEveryLineForGeneration = 300;
+    inline unsigned int nbPasswordsInEveryLineForGeneration = 2000;
 
     /**
      * @brief nbLinesToDelete

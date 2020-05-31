@@ -14,21 +14,21 @@ using namespace std;
 
 namespace rainbow
 {
+
+    const int nbPasswordsPerThread = 10;
+
+    inline int nbPassWordsInEveryLineForUncyphering = 2000;
+
+    //std::mutex mutex;
+
+
     /**
      * @brief readHashToUncypher
      * This will load every hash to uncypher in memory
      * @return a vector of strings.
      * Every string is a hash to uncypher
-     *
-     * //va juste recuperer tout les hash a dechiffrer et le mettre en memeoir
      */
     vector<string> readHashToUncypher();
-
-    const int nbPasswordsPerThread = 10;
-
-    inline int nbPassWordsInEveryLineForUncyphering = 300;
-
-    //std::mutex mutex;
 
     /**
      * @brief findCorrectChain

@@ -5,10 +5,6 @@
 #include "sha256.h"
 #include "tableGeneration.h"
 #include "uncypher.h"
-#include <vector>
-#include <thread>
-#include <chrono>
-#include <math.h>
 
 /**
  * This project has been made by Jérôme De Groote (42503) & Léopold Mols (53212)
@@ -47,17 +43,13 @@ int main(int argc, char *argv[])
 
 
 
-    //findAllPasswords();
+    findAllPasswords();
 
-    generateRainbowTable();
+    //generateRainbowTable();
 
     time(&end);
     double time_taken = double(end - start);
-    if ((int)time_taken % 60 == 0)
-    {
-        cout << "Time taken by program is : " << fixed << time_taken << setprecision(150) << " sec " << endl;
-    }
-    cout << "TOTAL Time taken by program is : " << fixed << time_taken << setprecision(150);
+    cout << "TOTAL Time taken by program is : " << fixed << time_taken << setprecision(50);
     cout << " sec " << endl;
     //auto stopProgram = chrono::high_resolution_clock::now();
 
