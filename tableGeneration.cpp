@@ -697,6 +697,8 @@ void rainbow::createEachCharHashTextFile(unsigned int passwordLength)
 
 void rainbow::sortEveryCharUnsortedTextFile(unsigned int passwordLength/*, char sortFilesFromThisChar, char sortFilesUntilThisChar*/)
 {
+    // IL Y A UN ENDL A LA FIN DE CHAQUE FICHIER TRIé. C'EST PROBABLEMENT POUR CELA
+    // QUE LES FICHIERS TRIES FINAUX SONT BEAUCOUP TROP LEGERS
     int fileToRead = 0;
     for (unsigned int i = 0; i < char_policy.size(); i++)
     {
