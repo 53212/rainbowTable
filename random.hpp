@@ -29,7 +29,7 @@ T random(T min = std::numeric_limits<T>::min(),
 
     static std::mt19937 rng_deterministic {};
 
-    using DIST = std::conditional_t<std::is_integral_v<T>, std::uniform_int_distribution<T>, std::uniform_real_distribution<T>>;
+    using DIST = std::conditional_t<std::is_integral_v<T>, std::uniform_int_distribution<T>, std::uniform_real_distribution<T> >;
     static DIST dist;
 
     if (dist.min() != min || dist.max() != max)
@@ -42,7 +42,7 @@ T random(T min = std::numeric_limits<T>::min(),
 }
 
 template<class T>
-std::shared_ptr<std::vector<T>> dense_distinct_random(int n, T min, T max, bool reproducible = false)
+std::shared_ptr<std::vector<T> > dense_distinct_random(int n, T min, T max, bool reproducible = false)
 {
     static_assert(std::is_integral_v<T>, "Generated numbers must be integers");
 
@@ -53,7 +53,7 @@ std::shared_ptr<std::vector<T>> dense_distinct_random(int n, T min, T max, bool 
     for(int i = 0; i < max - min + 1; i++)
         from.push_back(max - min + i);
 
-    std::shared_ptr<std::vector<T>> out;
+    std::shared_ptr<std::vector<T> > out;
     for(int i = 0; i < n; i++)
     {
         auto index = random(0, from.size(), reproducible);
@@ -66,14 +66,14 @@ std::shared_ptr<std::vector<T>> dense_distinct_random(int n, T min, T max, bool 
 }
 
 template<class T>
-std::shared_ptr<std::vector<T>> sparse_distinct_random(int n,  T min = std::numeric_limits<T>::min(),
+std::shared_ptr<std::vector<T> > sparse_distinct_random(int n,  T min = std::numeric_limits<T>::min(),
                                                        T max = std::numeric_limits<T>::max(),
                                                        bool reproducible = false)
 {
     if (max < min)
         throw std::invalid_argument {"Maximum must be higher than minimum"};
 
-    std::shared_ptr<std::vector<T>> out = std::make_shared<std::vector<T>>();
+    std::shared_ptr<std::vector<T> > out = std::make_shared<std::vector<T> >();
     for(int i = 0; i < n; i++)
     {
         T nbr = rainbow::random(min, max, reproducible);

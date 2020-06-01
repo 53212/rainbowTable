@@ -62,6 +62,7 @@ class SHA256
 };
 
 std::string sha256(std::string input);
+
 std::string reduce(const std::string &hash, unsigned int collision, int passwordLength);
 
 #define SHA2_SHFR(x, n)    (x >> n)

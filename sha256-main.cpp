@@ -43,9 +43,9 @@ int main(int argc, char *argv[])
 
 
 
-    findAllPasswords();
+    //findAllPasswords();
 
-    //generateRainbowTable();
+    generateRainbowTable();
 
     time(&end);
     double time_taken = double(end - start);
